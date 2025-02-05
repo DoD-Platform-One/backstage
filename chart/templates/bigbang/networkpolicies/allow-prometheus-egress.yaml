@@ -1,0 +1,26 @@
+{{- if .Values.networkPolicies.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-prometheus-egress-{{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  podSelector: 
+    matchLabels:
+      app.kubernetes.io/name: alloy
+  policyTypes:
+  - Egress
+  egress:
+  - to:
+    - namespaceSelector:
+        {{- $defaultNSSelector := dict "matchLabels" (dict "app.kubernetes.io/name" "monitoring") -}}
+        {{- (dig "prometheus" "namespaceSelector" $defaultNSSelector .Values.networkPolicies.egress) | toYaml | nindent 8 }}
+    - podSelector:
+        {{- $defaultPodSelector := dict "matchLabels" (dict "app.kubernetes.io/name" "prometheus") -}}
+        {{- (dig "prometheus" "podSelector" $defaultPodSelector .Values.networkPolicies.egress) | toYaml | nindent 8 }}
+    ports:
+    {{- $defaultPorts := list 9090 }}
+    {{- range (dig "prometheus" "ports" $defaultPorts .Values.networkPolicies.egress) }}
+    - port: {{ . }}
+    {{- end }}
+{{- end }}

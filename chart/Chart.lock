@@ -1,9 +1,12 @@
 dependencies:
+- name: backstage
+  repository: oci://ghcr.io/backstage/charts
+  version: 1.9.6
 - name: common
   repository: oci://registry-1.docker.io/bitnamicharts
   version: 2.10.0
 - name: postgresql
   repository: oci://registry-1.docker.io/bitnamicharts
   version: 12.10.0
-digest: sha256:77630aa988cef5e3a9f64a9fc3427345f451534e973dbece805850be587cb59e
-generated: "2024-05-11T14:39:32.274594+01:00"
+digest: sha256:6b9c90f5cafcd59016a41c8c3b63d5da2570fa86279f1966024045b53015e7f4
+generated: "2025-01-27T14:12:06.269294-06:00"

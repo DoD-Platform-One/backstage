@@ -1,0 +1,26 @@
+{{- if .Values.networkPolicies.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-tempo-egress-{{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  podSelector: 
+    matchLabels:
+      app.kubernetes.io/name: alloy
+  policyTypes:
+  - Egress
+  egress:
+  - to:
+    - namespaceSelector:
+        {{- $defaultNSSelector := dict "matchLabels" (dict "app.kubernetes.io/name" "tempo") -}}
+        {{- (dig "tempo" "namespaceSelector" $defaultNSSelector .Values.networkPolicies.egress) | toYaml | nindent 8 }}
+    - podSelector:
+        {{- $defaultPodSelector := dict "matchLabels" (dict "app.kubernetes.io/name" "tempo") -}}
+        {{- (dig "tempo" "podSelector" $defaultPodSelector .Values.networkPolicies.egress) | toYaml | nindent 8 }}
+    ports:
+    {{- $defaultPorts := list 4317 }}
+    {{- range (dig "tempo" "ports" $defaultPorts .Values.networkPolicies.egress) }}
+    - port: {{ . }}
+    {{- end }}
+{{- end }}

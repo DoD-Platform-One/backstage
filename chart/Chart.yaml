@@ -11,6 +11,11 @@ annotations:
 apiVersion: v2
 description: A Helm chart for deploying a Backstage application
 dependencies:
+  - name: backstage
+    repository: oci://ghcr.io/backstage/charts
+    tags:
+      - 1.9.6
+    version: 1.9.6
   - name: common
     repository: oci://registry-1.docker.io/bitnamicharts
     tags:
