@@ -1,15 +1,22 @@
-
 {{- /* Render Istio Sidecar */ -}}
 {{- if and .Values.istio.enabled .Values.istio.hardened.enabled -}}
 apiVersion: networking.istio.io/v1beta1
 kind: Sidecar
 metadata:
+  name: {{ include "common.names.fullname" . }}-sidecar
+  namespace: {{ .Release.Namespace | quote }}
+  labels: {{- include "common.labels.standard" . | nindent 4 }}
+    app.kubernetes.io/component: backstage
+    app.kubernetes.io/part-of: {{ include "common.names.fullname" . }}
+spec:
+  workloadSelector:
+    labels: {{- include "common.labels.matchLabels" . | nindent 6 }}
+      app.kubernetes.io/component: backstage
+  outboundTrafficPolicy:
+    mode: {{ .Values.istio.hardened.outboundTrafficPolicyMode }}
   name: {{ .Release.Name }}-sidecar
   namespace: {{.Release.Namespace}}
   labels:
     name:
       {{- include "bigbang.labels" $ | nindent 4}}
-spec:
-  outboundTrafficPolicy:
-    mode: {{ .Values.istio.hardened.outboundTrafficPolicyMode }}
 {{- end }}

@@ -1,0 +1,51 @@
+# Backstage override configuration for your local development environment
+app:
+  baseUrl: http://localhost:7007
+
+auth:
+  environment: development
+  providers: 
+    guest:
+      # because we use NODE_ENV: production, we must set this to allow guest development login
+      dangerouslyAllowOutsideDevelopment: true
+    github:
+      development:
+        clientId: 'replaceme'
+        clientSecret: 'replaceme'
+        signIn:
+          resolvers:
+            # Matches the Github username with the Backstage user entity name
+            # See https://backstage.io/docs/auth/github/provider#resolvers for more resolvers.
+            - resolver: usernameMatchingUserEntityName
+
+kubernetes:
+  frontend:
+    podDelete:
+      enabled: true
+  serviceLocatorMethod:
+    type: 'singleTenant'
+  clusterLocatorMethods:
+    - type: 'config'
+      clusters:
+        - url: http://127.0.0.1:9999
+          name: bigbang-dev
+          authProvider: 'serviceAccount'
+          skipTLSVerify: false
+          skipMetricsLookup: true
+
+#################################################
+# Uncomment these if you are using github auth! #
+#################################################
+#catalog:
+#  locations:
+#    - type: file
+#      target: ./examples/entities.yaml
+#
+#    - type: file
+#      target: ./examples/template/template.yaml
+#
+#    # local example organizational data
+#    - type: file
+#      target: ./examples/org.yaml
+#      rules:
+#        - allow: [User, Group]

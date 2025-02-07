@@ -1,3 +1,52 @@
+# Development Maintenance
+
+Don't forget to look at the [bitnami common chart](https://github.com/bitnami/charts/tree/main/bitnami/common/templates) for examples of how to do things.
+
+You need to:
+- [work the intro to backstage](https://backstage.io/docs/getting-started/)
+- [enable buildkit](https://docs.docker.com/build/buildkit/#getting-started)
+- [install buildx](https://github.com/docker/buildx?tab=readme-ov-file#installing)
+
+To build and run:
+```bash
+# For local development
+make
+# For docker development
+make docker
+```
+
+More options
+```bash
+# Build the code
+make build
+# Run the code
+make run
+
+# Build the docker image locally
+make docker-build
+# Build the docker image in a multi-stage build (doesn't require any local dependencies)
+make docker-build-multi
+# Run the latest image
+make docker-run
+```
+
+## TODO: all of this
+- [ ] Finish these docs
+- [ ] Add a `make test` command
+- [ ] Add a `make lint` command
+- [ ] Add a `make format` command
+- [ ] Add a `make clean` command
+- [ ] [Harden the docker images](https://github.com/backstage/backstage/blob/master/contrib/docker/minimal-hardened-image/Dockerfile)
+- [ ] [Upgrading backstage](https://backstage.io/docs/getting-started/keeping-backstage-updated/)
+
+## Changes BB Values
+
+### chart/values.yaml
+- All big bang values at the bottom of the chart
+
+### chart/templates/bigbang/**
+- Everything in the bigbang folder
+=======
 # Work In Progress....
 Please see `TEMP_DEV.md` for getting started.
 
@@ -57,4 +106,3 @@ The `Chart.yaml` file has a number of changes to support Big Bang needs:
 - `-bb.x` version appended
 - Annotations added for images and app versions
 - Dependencies added for Gluon and BB Redis
-
