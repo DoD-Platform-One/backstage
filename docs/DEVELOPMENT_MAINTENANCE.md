@@ -3,11 +3,13 @@
 Don't forget to look at the [bitnami common chart](https://github.com/bitnami/charts/tree/main/bitnami/common/templates) for examples of how to do things.
 
 You need to:
+
 - [work the intro to backstage](https://backstage.io/docs/getting-started/)
 - [enable buildkit](https://docs.docker.com/build/buildkit/#getting-started)
 - [install buildx](https://github.com/docker/buildx?tab=readme-ov-file#installing)
 
 To build and run:
+
 ```bash
 # For local development
 make
@@ -16,6 +18,7 @@ make docker
 ```
 
 More options
+
 ```bash
 # Build the code
 make build
@@ -31,6 +34,7 @@ make docker-run
 ```
 
 ## TODO: all of this
+
 - [ ] Finish these docs
 - [ ] Add a `make test` command
 - [ ] Add a `make lint` command
@@ -42,12 +46,16 @@ make docker-run
 ## Changes BB Values
 
 ### chart/values.yaml
+
 - All big bang values at the bottom of the chart
 
 ### chart/templates/bigbang/**
+
 - Everything in the bigbang folder
 =======
-# Work In Progress....
+
+# Work In Progress
+
 Please see `TEMP_DEV.md` for getting started.
 
 # Files that require bigbang integration testing
@@ -85,11 +93,9 @@ Here's the section of the `chart/values.yaml` file where these additions are con
 chart overrides here
 ```
 
-
 ## Monitoring
 
 WIP
-
 
 ## automountServiceAccountToken
 
