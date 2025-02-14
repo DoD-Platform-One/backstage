@@ -167,11 +167,11 @@ backstage:
     #     cpu: 100m -->
     resources:
       limits:
-        cpu: 400m
-        memory: 500m
+        cpu: 2
+        memory: 2Gi
       requests:
-        cpu: 250m
-        memory: 200m
+        cpu: 0.6
+        memory: 500Mi
 
     # -- Readiness Probe
     # Backstage doesn't provide any health endpoints by default. A simple one can be added like this: https://backstage.io/docs/plugins/observability/#health-checks

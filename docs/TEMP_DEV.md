@@ -94,18 +94,13 @@ packages:
       path: "./chart"
     values:
       backstage:
+        serviceAccount:
+          name: "backstage"
         backstage:
           args: ["--config", "app-config.yaml", "--config", "app-config.docker.yaml"]
-        image:
-          repository: "bigbang-staging/backstage"
-          tag: "initial-start"
-        resources:
-          requests:
-            cpu: 2
-            memory: 2Gi
-          limits:
-            cpu: 2
-            memory: 2Gi
+          image:
+            repository: "bigbang-staging/backstage"
+            tag: "initial-start"
     istio:
       hosts:
         - names:

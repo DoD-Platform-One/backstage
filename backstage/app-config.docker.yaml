@@ -19,11 +19,39 @@ auth:
             - resolver: usernameMatchingUserEntityName
 
 kubernetes:
+  customResources:
+    - group: 'networking.istio.io'
+      apiVersion: 'v1'
+      plural: 'virtualservices'
+    - group: 'networking.k8s.io'
+      apiVersion: 'v1'
+      plural: 'networkpolicies'
+    - group: 'security.istio.io'
+      apiVersion: 'v1'
+      plural: 'authorizationpolicies'
+    - group: 'security.istio.io'
+      apiVersion: 'v1'
+      plural: 'peerauthentications'
+    - group: 'source.toolkit.fluxcd.io'
+      apiVersion: 'v1'
+      plural: 'helmcharts'
+    - group: 'helm.toolkit.fluxcd.io'
+      apiVersion: 'v2'
+      plural: 'helmreleases'
+    - group: 'source.toolkit.fluxcd.io'
+      apiVersion: 'v1'
+      plural: 'gitrepositories'
+    - group: 'wgpolicyk8s.io'
+      apiVersion: 'v1alpha2'
+      plural: 'clusterpolicyreports'
+    - group: 'wgpolicyk8s.io'
+      apiVersion: 'v1alpha2'
+      plural: 'policyreports'
   frontend:
     podDelete:
       enabled: true
   serviceLocatorMethod:
-    type: 'singleTenant'
+    type: 'multiTenant'
   clusterLocatorMethods:
     - type: 'config'
       clusters:
@@ -33,19 +61,16 @@ kubernetes:
           skipTLSVerify: false
           skipMetricsLookup: true
 
-#################################################
-# Uncomment these if you are using github auth! #
-#################################################
-#catalog:
-#  locations:
-#    - type: file
-#      target: ./examples/entities.yaml
-#
-#    - type: file
-#      target: ./examples/template/template.yaml
-#
-#    # local example organizational data
-#    - type: file
-#      target: ./examples/org.yaml
-#      rules:
-#        - allow: [User, Group]
+catalog:
+  locations:
+    - type: file
+      target: ./examples/entities.yaml
+
+    - type: file
+      target: ./examples/template/template.yaml
+
+    # local example organizational data
+    - type: file
+      target: ./examples/org.yaml
+      rules:
+        - allow: [User, Group]
