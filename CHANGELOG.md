@@ -4,6 +4,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
+## [1.9.6-bb.2] - 2025-02-14
+
+### Added
+
+- initial k8s plugin resources and config
+
 ## [1.9.6-bb.1] - 2025-02-05
 
 ### Added

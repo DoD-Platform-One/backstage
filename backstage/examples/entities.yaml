@@ -12,6 +12,8 @@ apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
   name: example-website
+  annotations:
+    'backstage.io/kubernetes-label-selector': 'app.kubernetes.io/managed-by=Helm'
 spec:
   type: website
   lifecycle: experimental

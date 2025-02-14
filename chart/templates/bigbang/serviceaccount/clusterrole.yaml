@@ -6,12 +6,58 @@ metadata:
   labels:
     {{- include "app.labels" . | nindent 4 }}
 rules:
-  - apiGroups: ["apps"]
-    resources: ["deployments"]
-    verbs: ["get", "list"]
-  - apiGroups: [""]
-    resources: ["pods"]
-    verbs: ["get", "list"]
-  - apiGroups: [""]
-    resources: ["pods/exec"]
-    verbs: ["create", "delete"]
+  - apiGroups:
+      - '*'
+    resources:
+      - pods
+      - configmaps
+      - services
+      - deployments
+      - replicasets
+      - horizontalpodautoscalers
+      - ingresses
+      - statefulsets
+      - limitranges
+      - resourcequotas
+      - daemonsets
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - batch
+    resources:
+      - jobs
+      - cronjobs
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - metrics.k8s.io
+    resources:
+      - pods
+    verbs:
+      - get
+      - list
+  - apiGroups:
+      - 'networking.istio.io'
+      - 'security.istio.io'
+      - 'source.toolkit.fluxcd.io'
+      - 'helm.toolkit.fluxcd.io'
+      - 'networking.k8s.io'
+      - 'wgpolicyk8s.io'
+    resources:
+      - virtualservices
+      - networkpolicies
+      - authorizationpolicies
+      - peerauthentications
+      - helmcharts
+      - helmreleases
+      - gitrepositories
+      - policyreports
+      - clusterpolicyreports 
+    verbs:
+      - get
+      - list
+      - watch
