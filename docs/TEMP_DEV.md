@@ -39,6 +39,33 @@ Once tagged, run `docker push registry1.dso.mil/bigbang-staging/backstage:<tag-n
 
 Upon publishing your development branch tag, you can modify your image tag override (below) at `initial-start` with the tag name and this will run your built image against bigbang.
 
+## Devbox
+
+Devbox is a command-line tool that helps developers create consistent, isolated development environments by leveraging 
+the Nix package manager. It simplifies the process of installing and managing dependencies across different projects, 
+ensuring reproducible builds for every team member.
+
+The project has a devbox config. This will ensure you have the specific version of the dependencies needed to build this 
+project.
+
+### Installation instructions
+Installation is straight forward. Run `curl -fsSL https://get.jetify.com/devbox | bash` if you are on MacOS/Linux. For
+other OS install instructions, refer to the documentation:
+
+https://www.jetify.com/docs/devbox/installing_devbox/
+
+> NOTE: It is best practice to review any scripts you download from the internet before just blindly running them.
+
+### Usage
+
+![demo.gif](demo.gif){width=40%}
+
+Once you have devbox installed, simply enter the directory where you have cloned backstage and run `devbox shell`. This
+will fire up devbox, which on first run will pull down the appropriate Nix packages and setup the development environment.
+From there the commands listed above like `make run` should function without the need to worry about development 
+dependencies. 
+
+
 ## Overrides
 
 This makes use of the wrapper project to be able to pull in this chart before its officially part of the big bang echo
