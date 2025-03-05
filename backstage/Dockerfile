@@ -139,6 +139,7 @@ RUN apk update && \
 RUN apk update && \
     apk upgrade && \
     apk add --no-cache \
+        curl \
         sqlite-dev \
         && \
     rm -rf /var/cache/apk

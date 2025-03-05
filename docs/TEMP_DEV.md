@@ -102,6 +102,9 @@ fluentbit:
 
 monitoring:
   enabled: true
+  git:
+    tag: null
+    branch: "grafana-netpol"
 
 neuvector:
   enabled: false
@@ -120,6 +123,8 @@ packages:
       branch: "your-branch-here"
       path: "./chart"
     values:
+      networkPolicies:
+        enabled: true
       backstage:
         serviceAccount:
           name: "backstage"
@@ -128,6 +133,44 @@ packages:
           image:
             repository: "bigbang-staging/backstage"
             tag: "initial-start"
+          extraEnvVars:
+            - name: GRAFANA_HTTP
+              value: *grafanaHttp
+            - name: GRAFANA_URL
+              value: *grafanaUrl
+            - name: GRAFANA_DOMAIN
+              value: *grafanaExternalUrl
+    
+          extraEnvVarsSecrets:
+            - grafana-api-token
+    
+          initContainers:
+            - name: backstage-grafana-token
+              image: registry1.dso.mil/ironbank/big-bang/base:2.1.0
+              command: ["/bin/sh"]
+              args: ["-c", "export SVCACCT_ID=$(curl -X POST -H 'Content-Type: application/json' -d '{\"name\": \"backstage-viewer-{{ (randAlphaNum 5) }}\", \"role\": \"Viewer\"}' ${GRAFANA_HTTP}://${GRAFANA_ADMIN}:${GRAFANA_PASS}@${GRAFANA_URL}/api/serviceaccounts | jq -r '.id') && kubectl create secret -n backstage generic grafana-api-token --from-literal=GRAFANA_TOKEN=$(curl -X POST -H 'Content-Type: application/json' -d '{\"name\": \"backstage-grafana-{{ (randAlphaNum 5) }}\"}' ${GRAFANA_HTTP}://${GRAFANA_ADMIN}:${GRAFANA_PASS}@${GRAFANA_URL}/api/serviceaccounts/${SVCACCT_ID}/tokens | jq -r '.key') --dry-run=client -o yaml | kubectl apply -f -"]
+              env:
+                - name: GRAFANA_URL
+                  value: *grafanaUrl
+                - name: GRAFANA_HTTP
+                  value: *grafanaHttp
+                - name: GRAFANA_ADMIN
+                  valueFrom:
+                    secretKeyRef:
+                      name: monitoring-grafana
+                      key: admin-user
+                - name: GRAFANA_PASS
+                  valueFrom:
+                    secretKeyRef:
+                      name: monitoring-grafana
+                      key: admin-password
+              securityContext:
+                runAsNonRoot: true
+                runAsUser: 1001
+                runAsGroup: 1001
+                capabilities:
+                  drop:
+                    - ALL
     istio:
       hosts:
         - names:

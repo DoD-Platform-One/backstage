@@ -89,9 +89,62 @@ This package has a number of additions to the [upstream helm chart](https://upst
 
 Here's the section of the `chart/values.yaml` file where these additions are configured:
 
+These values are required to be at the top of values.yaml as they are anchoring values and are consumed later in the values fileas extraEnvVars for the containers to utilize in config.
 ```yaml
-chart overrides here
+grafana:
+  # The following is the endpoint at which grafana API calls will be accessed through
+  url: &grafanaUrl "monitoring-grafana.monitoring.svc.cluster.local"
+  http: &grafanaHttp "http"
+
+  # The following is the rewritten URL at which backstage grafana iframe will hyperlink to
+  externalUrl: &grafanaExternalUrl "https://grafana.dev.bigbang.mil"
+...
+
+    extraEnvVars:
+      - name: GRAFANA_HTTP
+        value: *grafanaHttp
+      - name: GRAFANA_URL
+        value: *grafanaUrl
+      - name: GRAFANA_DOMAIN
+        value: *grafanaExternalUrl
 ```
+
+The following is added as an initContainer to generate the api token for backstage to query grafana API.
+
+```yaml
+initContainers:
+      - name: backstage-grafana-token
+        image: registry1.dso.mil/ironbank/big-bang/base:2.1.0
+        command: ["/bin/sh"]
+        args: ["-c", "export SVCACCT_ID=$(curl -X POST -H 'Content-Type: application/json' -d '{\"name\": \"backstage-viewer-{{ (randAlphaNum 5) }}\", \"role\": \"Viewer\"}' ${GRAFANA_HTTP}://${GRAFANA_ADMIN}:${GRAFANA_PASS}@${GRAFANA_URL}/api/serviceaccounts | jq -r '.id') && kubectl create secret -n backstage generic grafana-api-token --from-literal=GRAFANA_TOKEN=$(curl -X POST -H 'Content-Type: application/json' -d '{\"name\": \"backstage-grafana-{{ (randAlphaNum 5) }}\"}' ${GRAFANA_HTTP}://${GRAFANA_ADMIN}:${GRAFANA_PASS}@${GRAFANA_URL}/api/serviceaccounts/${SVCACCT_ID}/tokens | jq -r '.key') --dry-run=client -o yaml | kubectl apply -f -"]
+        env:
+          - name: GRAFANA_URL
+            value: *grafanaUrl
+          - name: GRAFANA_HTTP
+            value: *grafanaHttp
+          - name: GRAFANA_ADMIN
+            valueFrom:
+              secretKeyRef:
+                name: monitoring-grafana
+                key: admin-user  
+          - name: GRAFANA_PASS
+            valueFrom:
+              secretKeyRef:
+                name: monitoring-grafana
+                key: admin-password
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 1001
+          runAsGroup: 1001
+          capabilities:
+            drop:
+              - ALL
+```
+
+## chart/templates/bigbang/kyverno/*
+Added to utilize grafana API generation via a clusterpolicy that syncs the default grafana credentials at "monitoring-grafana" to backstage namespace on first create
+
+
 
 ## Monitoring
 
