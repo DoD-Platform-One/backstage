@@ -13,6 +13,7 @@ kind: Component
 metadata:
   name: example-website
   annotations:
+    grafana/dashboard-selector: "(tags @> 'my-service' || tags @> 'Policy Reporter')"
     'backstage.io/kubernetes-label-selector': 'app.kubernetes.io/managed-by=Helm'
 spec:
   type: website

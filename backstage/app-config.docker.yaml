@@ -18,6 +18,22 @@ auth:
             # See https://backstage.io/docs/auth/github/provider#resolvers for more resolvers.
             - resolver: usernameMatchingUserEntityName
 
+proxy:
+  '/grafana/api':
+    # May be a public or an internal DNS
+    target: ${GRAFANA_HTTP}://${GRAFANA_URL}
+    headers:
+      Authorization: Bearer ${GRAFANA_TOKEN}
+
+grafana:
+  # Publicly accessible domain
+  domain: ${GRAFANA_DOMAIN}
+
+  # Is unified alerting enabled in Grafana?
+  # See: https://grafana.com/blog/2021/06/14/the-new-unified-alerting-system-for-grafana-everything-you-need-to-know/
+  # Optional. Default: false
+  unifiedAlerting: false
+
 kubernetes:
   customResources:
     - group: 'networking.istio.io'

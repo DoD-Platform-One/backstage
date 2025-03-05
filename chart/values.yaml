@@ -15,6 +15,14 @@ global:
   # </br> E.g. `imagePullSecrets: [myRegistryKeySecretName]`
   imagePullSecrets: []
 
+# Bigbang reusable anchors for defining grafana URLs within the pods environment vars and configs
+grafana:
+  # The following is the endpoint at which grafana API calls will be accessed through
+  url: &grafanaUrl ""
+  http: &grafanaHttp "http"
+
+  # The following is the rewritten URL at which backstage grafana iframe will hyperlink to
+  externalUrl: &grafanaExternalUrl ""
 
 # -- Common parameters
 
@@ -134,20 +142,20 @@ backstage:
     # -- Deployment sidecars
     extraContainers: []
 
-    # -- Backstage container environment variables
-    extraEnvVars: []
-
     # -- Backstage container environment variables from existing ConfigMaps
     extraEnvVarsCM: []
-
-    # -- Backstage container environment variables from existing Secrets
-    extraEnvVarsSecrets: []
 
     # -- Backstage container additional volume mounts
     extraVolumeMounts: []
 
     # -- Backstage container additional volumes
     extraVolumes: []
+
+    # -- Backstage container environment variables
+    extraEnvVars: []
+
+    # -- Backstage container environment variables from existing Secrets
+    extraEnvVarsSecrets: []
 
     # -- Backstage container init containers
     initContainers: []
@@ -452,15 +460,98 @@ metrics:
 
 # BigBang configuration
 
+## The below configuration enables grafana from a new deployment.
+## See https://repo1.dso.mil/big-bang/apps/sandbox/backstage/-/blob/main/docs/Grafana.md for deploying without grafana, or utilizing an existing deployment.
+############################################################################################
+#backstage:
+#  backstage:
+#    extraEnvVars:
+#      - name: GRAFANA_HTTP
+#        value: *grafanaHttp
+#      - name: GRAFANA_URL
+#        value: *grafanaUrl
+#      - name: GRAFANA_DOMAIN
+#        value: *grafanaExternalUrl
+#
+#    extraEnvVarsSecrets:
+#      - grafana-api-token
+#
+#    initContainers:
+#      - name: backstage-grafana-token
+#        image: registry1.dso.mil/ironbank/big-bang/base:2.1.0
+#        command: ["/bin/sh"]
+#        args: ["-c", "export SVCACCT_ID=$(curl -X POST -H 'Content-Type: application/json' -d '{\"name\": \"backstage-viewer-{{ (randAlphaNum 5) }}\", \"role\": \"Viewer\"}' ${GRAFANA_HTTP}://${GRAFANA_ADMIN}:${GRAFANA_PASS}@${GRAFANA_URL}/api/serviceaccounts | jq -r '.id') && kubectl create secret -n backstage generic grafana-api-token --from-literal=GRAFANA_TOKEN=$(curl -X POST -H 'Content-Type: application/json' -d '{\"name\": \"backstage-grafana-{{ (randAlphaNum 5) }}\"}' ${GRAFANA_HTTP}://${GRAFANA_ADMIN}:${GRAFANA_PASS}@${GRAFANA_URL}/api/serviceaccounts/${SVCACCT_ID}/tokens | jq -r '.key') --dry-run=client -o yaml | kubectl apply -f -"]
+#        env:
+#          - name: GRAFANA_URL
+#            value: *grafanaUrl
+#          - name: GRAFANA_HTTP
+#            value: *grafanaHttp
+#          - name: GRAFANA_ADMIN
+#            valueFrom:
+#              secretKeyRef:
+#                name: monitoring-grafana
+#                key: admin-user
+#          - name: GRAFANA_PASS
+#            valueFrom:
+#              secretKeyRef:
+#                name: monitoring-grafana
+#                key: admin-password
+#        securityContext:
+#          runAsNonRoot: true
+#          runAsUser: 1001
+#          runAsGroup: 1001
+#          capabilities:
+#            drop:
+#              - ALL
+############################################################################################
+
 domain: dev.bigbang.mil
 
 networkPolicies:
+  # -- Toggle networkPolicies
   enabled: false
+  # -- Control Plane CIDR, defaults to 0.0.0.0/0, use `kubectl get endpoints -n default kubernetes` to get the CIDR range needed for your cluster
+  # Must be an IP CIDR range (x.x.x.x/x - ideally with /32 for the specific IP of a single endpoint, broader range for multiple masters/endpoints)
+  # Used by package NetworkPolicies to allow Kube API access
+  controlPlaneCidr: 0.0.0.0/0
+  additionalPolicies: []
+
+  # -- NetworkPolicy selectors and ports for
+  # egress to downstream telemetry ingestion services.
+  # These should be uncommented and overridden if any
+  # of these values deviate from the Big Bang defaults.
+  egress: {}
+    #
+    # prometheus:
+    #   ports:
+    #     - 9090
+    #   namespaceSelector:
+    #     matchLabels:
+    #       app.kubernetes.io/name: monitoring
+    #   podSelector:
+    #     matchLabels:
+    #       app.kubernetes.io/name: prometheus
+    # loki:
+    #   ports:
+    #     - 3100
+    #   namespaceSelector:
+    #     matchLabels:
+    #       app.kubernetes.io/name: logging
+    #   podSelector:
+    #     matchLabels:
+    #       app.kubernetes.io/name: loki-logging
+    # tempo:
+    #   ports:
+    #     - 4317
+    #   namespaceSelector:
+    #     matchLabels:
+    #       app.kubernetes.io/name: tempo
+    #   podSelector:
+    #     matchLabels:
+    #       app.kubernetes.io/name: tempo
   ingressLabels:
     app: istio-ingressgateway
     istio: ingressgateway
-  # See `kubectl cluster-info` and then resolve to IP
-  controlPlaneCidr: 0.0.0.0/0
 
 # -- Istio configuration
 istio:

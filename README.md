@@ -1,7 +1,7 @@
 <!-- Warning: Do not manually edit this file. See notes on gluon + helm-docs at the end of this file for more information. -->
 # backstage
 
-![Version: 1.9.6-bb.2](https://img.shields.io/badge/Version-1.9.6--bb.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v1.31.1](https://img.shields.io/badge/AppVersion-v1.31.1-informational?style=flat-square) ![Maintenance Track: unknown](https://img.shields.io/badge/Maintenance_Track-unknown-red?style=flat-square)
+![Version: 1.9.6-bb.3](https://img.shields.io/badge/Version-1.9.6--bb.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v1.31.1](https://img.shields.io/badge/AppVersion-v1.31.1-informational?style=flat-square) ![Maintenance Track: unknown](https://img.shields.io/badge/Maintenance_Track-unknown-red?style=flat-square)
 
 A Helm chart for deploying a Backstage application
 
@@ -55,6 +55,9 @@ helm install backstage chart/
 | global | object | See below | Global parameters Global Docker image parameters Please, note that this will override the image parameters, including dependencies, configured to use the global value Current available global Docker image parameters: imageRegistry, imagePullSecrets and storageClass |
 | global.imageRegistry | string | `""` | Global Docker image registry |
 | global.imagePullSecrets | list | `[]` | Global Docker registry secret names as an array </br> E.g. `imagePullSecrets: [myRegistryKeySecretName]` |
+| grafana.url | string | `""` |  |
+| grafana.http | string | `"http"` |  |
+| grafana.externalUrl | string | `""` |  |
 | kubeVersion | string | `""` | Override Kubernetes version |
 | nameOverride | string | `""` | String to partially override common.names.fullname |
 | fullnameOverride | string | `""` | String to fully override common.names.fullname |
@@ -88,14 +91,14 @@ helm install backstage chart/
 | backstage.backstage.args | list | `[]` | Backstage container command arguments |
 | backstage.backstage.extraAppConfig | list | `[]` | Extra app configuration files to inline into command arguments |
 | backstage.backstage.extraContainers | list | `[]` | Deployment sidecars |
-| backstage.backstage.extraEnvVars | list | `[]` | Backstage container environment variables |
 | backstage.backstage.extraEnvVarsCM | list | `[]` | Backstage container environment variables from existing ConfigMaps |
-| backstage.backstage.extraEnvVarsSecrets | list | `[]` | Backstage container environment variables from existing Secrets |
 | backstage.backstage.extraVolumeMounts | list | `[]` | Backstage container additional volume mounts |
 | backstage.backstage.extraVolumes | list | `[]` | Backstage container additional volumes |
+| backstage.backstage.extraEnvVars | list | `[]` | Backstage container environment variables |
+| backstage.backstage.extraEnvVarsSecrets | list | `[]` | Backstage container environment variables from existing Secrets |
 | backstage.backstage.initContainers | list | `[]` | Backstage container init containers |
 | backstage.backstage.installDir | string | `"/app"` | Directory containing the backstage installation |
-| backstage.backstage.resources | object | `{"limits":{"cpu":"400m","memory":"500m"},"requests":{"cpu":"250m","memory":"200m"}}` | Resource requests/limits <br /> Ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#resource-requests-and-limits-of-pod-and-container <!-- E.g. resources:   limits:     memory: 1Gi     cpu: 1000m   requests:     memory: 250Mi     cpu: 100m --> |
+| backstage.backstage.resources | object | `{"limits":{"cpu":2,"memory":"2Gi"},"requests":{"cpu":0.6,"memory":"500Mi"}}` | Resource requests/limits <br /> Ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#resource-requests-and-limits-of-pod-and-container <!-- E.g. resources:   limits:     memory: 1Gi     cpu: 1000m   requests:     memory: 250Mi     cpu: 100m --> |
 | backstage.backstage.readinessProbe | object | `{}` | Readiness Probe Backstage doesn't provide any health endpoints by default. A simple one can be added like this: https://backstage.io/docs/plugins/observability/#health-checks <br /> Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes <!-- E.g. readinessProbe:   failureThreshold: 3   httpGet:     path: /healthcheck     port: 7007     scheme: HTTP   initialDelaySeconds: 30   periodSeconds: 10   successThreshold: 2   timeoutSeconds: 2 |
 | backstage.backstage.livenessProbe | object | `{}` | Liveness Probe Backstage doesn't provide any health endpoints by default. A simple one can be added like this: https://backstage.io/docs/plugins/observability/#health-checks <br /> Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes <!-- E.g. livenessProbe:   failureThreshold: 3   httpGet:     path: /healthcheck     port: 7007     scheme: HTTP   initialDelaySeconds: 60   periodSeconds: 10   successThreshold: 1   timeoutSeconds: 2 |
 | backstage.backstage.startupProbe | object | `{}` | Startup Probe Backstage doesn't provide any health endpoints by default. A simple one can be added like this: https://backstage.io/docs/plugins/observability/#health-checks <br /> Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes <!-- E.g. startupProbe:   failureThreshold: 3   httpGet:     path: /healthcheck     port: 7007     scheme: HTTP   initialDelaySeconds: 60   periodSeconds: 10   successThreshold: 1   timeoutSeconds: 2 |
@@ -152,10 +155,12 @@ helm install backstage chart/
 | metrics.serviceMonitor.interval | string | `nil` | ServiceMonitor scrape interval |
 | metrics.serviceMonitor.path | string | `"/metrics"` | ServiceMonitor endpoint path <br /> Note that the /metrics endpoint is NOT present in a freshly scaffolded Backstage app. To setup, follow the [Prometheus metrics tutorial](https://github.com/backstage/backstage/blob/master/contrib/docs/tutorials/prometheus-metrics.md). |
 | domain | string | `"dev.bigbang.mil"` |  |
-| networkPolicies.enabled | bool | `false` |  |
+| networkPolicies.enabled | bool | `false` | Toggle networkPolicies |
+| networkPolicies.controlPlaneCidr | string | `"0.0.0.0/0"` | Control Plane CIDR, defaults to 0.0.0.0/0, use `kubectl get endpoints -n default kubernetes` to get the CIDR range needed for your cluster Must be an IP CIDR range (x.x.x.x/x - ideally with /32 for the specific IP of a single endpoint, broader range for multiple masters/endpoints) Used by package NetworkPolicies to allow Kube API access |
+| networkPolicies.additionalPolicies | list | `[]` |  |
+| networkPolicies.egress | object | `{}` | NetworkPolicy selectors and ports for egress to downstream telemetry ingestion services. These should be uncommented and overridden if any of these values deviate from the Big Bang defaults. |
 | networkPolicies.ingressLabels.app | string | `"istio-ingressgateway"` |  |
 | networkPolicies.ingressLabels.istio | string | `"ingressgateway"` |  |
-| networkPolicies.controlPlaneCidr | string | `"0.0.0.0/0"` |  |
 | istio | object | `{"backstage":{"gateways":["istio-system/public"],"hosts":["backstage.{{ .Values.domain }}"]},"enabled":false,"hardened":{"customAuthorizationPolicies":[],"customServiceEntries":[],"enabled":false,"outboundTrafficPolicyMode":"REGISTRY_ONLY"},"mtls":{"mode":"STRICT"},"namespace":"istio-system"}` | Istio configuration |
 
 ## Contributing

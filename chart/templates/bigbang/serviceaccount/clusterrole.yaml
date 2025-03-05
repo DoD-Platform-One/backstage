@@ -10,6 +10,7 @@ rules:
       - '*'
     resources:
       - pods
+      - pods/log
       - configmaps
       - services
       - deployments
@@ -24,6 +25,16 @@ rules:
       - get
       - list
       - watch
+  - apiGroups:
+      - '*'
+    resources:
+      - secrets
+    verbs:
+      - create
+      - patch
+      - update
+      - get
+      - list
   - apiGroups:
       - batch
     resources:

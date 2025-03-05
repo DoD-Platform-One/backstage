@@ -59,6 +59,9 @@ import {
   isKubernetesAvailable,
 } from '@backstage/plugin-kubernetes';
 
+// grafana
+import { EntityGrafanaDashboardsCard } from '@backstage-community/plugin-grafana';
+
 const techdocsContent = (
   <EntityTechdocsContent>
     <TechDocsAddons>
@@ -136,6 +139,12 @@ const overviewContent = (
       <EntityCatalogGraphCard variant="gridItem" height={400} />
     </Grid>
 
+    <Grid item md={6}>
+      {/* Grafana alert card start */}
+      <EntityGrafanaDashboardsCard />
+      {/* Grafana alert card end */}
+    </Grid>
+
     <Grid item md={4} xs={12}>
       <EntityLinksCard />
     </Grid>
@@ -143,6 +152,7 @@ const overviewContent = (
       <EntityHasSubcomponentsCard variant="gridItem" />
     </Grid>
   </Grid>
+
 );
 
 const serviceEntityPage = (
