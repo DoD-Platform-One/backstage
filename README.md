@@ -1,7 +1,7 @@
 <!-- Warning: Do not manually edit this file. See notes on gluon + helm-docs at the end of this file for more information. -->
 # backstage
 
-![Version: 1.9.6-bb.3](https://img.shields.io/badge/Version-1.9.6--bb.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v1.31.1](https://img.shields.io/badge/AppVersion-v1.31.1-informational?style=flat-square) ![Maintenance Track: unknown](https://img.shields.io/badge/Maintenance_Track-unknown-red?style=flat-square)
+![Version: 1.9.6-bb.4](https://img.shields.io/badge/Version-1.9.6--bb.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v1.31.1](https://img.shields.io/badge/AppVersion-v1.31.1-informational?style=flat-square) ![Maintenance Track: unknown](https://img.shields.io/badge/Maintenance_Track-unknown-red?style=flat-square)
 
 A Helm chart for deploying a Backstage application
 

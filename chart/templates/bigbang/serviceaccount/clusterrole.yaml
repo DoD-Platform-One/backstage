@@ -58,6 +58,7 @@ rules:
       - 'helm.toolkit.fluxcd.io'
       - 'networking.k8s.io'
       - 'wgpolicyk8s.io'
+      - 'kyverno.io'
     resources:
       - virtualservices
       - networkpolicies
@@ -68,6 +69,7 @@ rules:
       - gitrepositories
       - policyreports
       - clusterpolicyreports 
+      - clusterpolicies
     verbs:
       - get
       - list
