@@ -4,6 +4,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
+## [1.9.6-bb.4] - 2025-03-13
+
+### Adde
+
+- base deployment component, kyverno policy component, base API relations
+
 ## [1.9.6-bb.3] - 2025-02-27
 
 ### Added

@@ -63,6 +63,9 @@ kubernetes:
     - group: 'wgpolicyk8s.io'
       apiVersion: 'v1alpha2'
       plural: 'policyreports'
+    - group: 'kyverno.io'
+      apiVersion: 'v1'
+      plural: 'clusterpolicies'
   frontend:
     podDelete:
       enabled: true
