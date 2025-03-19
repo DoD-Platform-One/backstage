@@ -123,6 +123,12 @@ packages:
       branch: "your-branch-here"
       path: "./chart"
     values:
+      grafana:
+        # The following is the endpoint at which grafana API calls will be accessed through
+        url: &grafanaUrl "monitoring-grafana.monitoring.svc.cluster.local"
+        http: &grafanaHttp "http"
+        # The following is the rewritten URL at which backstage grafana iframe will hyperlink to
+        externalUrl: &grafanaExternalUrl "https://grafana.dev.bigbang.mil"
       networkPolicies:
         enabled: true
       backstage:
