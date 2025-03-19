@@ -117,6 +117,9 @@ packages:
     enabled: true
     wrapper:
       enabled: true
+    dependsOn:
+      - name: grafana
+        namespace: bigbang
     git:
       repo: "https://repo1.dso.mil/big-bang/apps/sandbox/backstage"
       tag: null
