@@ -33,4 +33,12 @@ ignore/*
 # Local History for Visual Studio Code
 .history/
 
+# Cypress
+chart/tests/cypress.config.js
+chart/tests/cypress.env.json
+chart/tests/cypress/fixtures/
+chart/tests/cypress/support/
+chart/tests/cypress/downloads/
+chart/tests/cypress/videos/
+
 
