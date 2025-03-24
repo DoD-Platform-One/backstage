@@ -29,7 +29,7 @@ which config is launched as the CMD for the image.
 ### Publish
 
 Upon image successfully building, you can validate it runs locally using `docker run --rm -it -p 7007:7007 <image ID>`, and visiting an incognito page
-at `localhost:7007` (Incognito recommended due to caching). This will run the container with your built image to session, using a merged `backstage/app-config.yaml` and `backstage/app-config.docker.yaml` as the config.
+at `localhost:7007` (Incognito recommended due to caching). This will run the container with your built image to session, using `backstage/app-config.yaml`.
 
 Once the dev image changes are validated, you can tag the image using the following:
 `docker tag <image ID> registry1.dso.mil/bigbang-staging/backstage:<tag-name>`
@@ -92,7 +92,7 @@ jaeger:
   enabled: false
 
 kiali:
-  enabled: false
+  enabled: true
 
 eckOperator:
   enabled: false
@@ -138,8 +138,9 @@ packages:
         serviceAccount:
           name: "backstage"
         backstage:
-          args: ["--config", "app-config.yaml", "--config", "app-config.docker.yaml"]
+          args: ["--config", "app-config.yaml", "--config", "app-config-from-configmap.yaml"]
           image:
+            registry: "registry1.dso.mil"
             repository: "bigbang-staging/backstage"
             tag: "initial-start"
           extraEnvVars:
@@ -180,6 +181,106 @@ packages:
                 capabilities:
                   drop:
                     - ALL
+          appConfig:
+            app:
+              # This baseUrl is required for guest login since it proxies directly to the backstage backend.
+              baseUrl: http://localhost:7007
+
+            auth:
+              environment: development
+              providers:
+                guest:
+                  # because we use NODE_ENV: production, we must set this to allow guest development login and for CI testing.
+                  dangerouslyAllowOutsideDevelopment: true
+                github:
+                  development:
+                    clientId: 'replaceme'
+                    clientSecret: 'replaceme'
+                    signIn:
+                      resolvers:
+                        # Matches the Github username with the Backstage user entity name
+                        # See https://backstage.io/docs/auth/github/provider#resolvers for more resolvers.
+                        - resolver: usernameMatchingUserEntityName
+            backend:
+              reading:
+                allow:
+                  - host: 'repo1.dso.mil'
+
+            proxy:
+              '/grafana/api':
+                # May be a public or an internal DNS
+                target: ${GRAFANA_HTTP}://${GRAFANA_URL}
+                headers:
+                  Authorization: Bearer ${GRAFANA_TOKEN}
+
+            grafana:
+              # Publicly accessible domain
+              domain: ${GRAFANA_DOMAIN}
+
+              # Is unified alerting enabled in Grafana?
+              # See: https://grafana.com/blog/2021/06/14/the-new-unified-alerting-system-for-grafana-everything-you-need-to-know/
+              # Optional. Default: false
+              unifiedAlerting: false
+
+            kubernetes:
+              customResources:
+                - group: 'networking.istio.io'
+                  apiVersion: 'v1'
+                  plural: 'virtualservices'
+                - group: 'networking.k8s.io'
+                  apiVersion: 'v1'
+                  plural: 'networkpolicies'
+                - group: 'security.istio.io'
+                  apiVersion: 'v1'
+                  plural: 'authorizationpolicies'
+                - group: 'security.istio.io'
+                  apiVersion: 'v1'
+                  plural: 'peerauthentications'
+                - group: 'source.toolkit.fluxcd.io'
+                  apiVersion: 'v1'
+                  plural: 'helmcharts'
+                - group: 'helm.toolkit.fluxcd.io'
+                  apiVersion: 'v2'
+                  plural: 'helmreleases'
+                - group: 'source.toolkit.fluxcd.io'
+                  apiVersion: 'v1'
+                  plural: 'gitrepositories'
+                - group: 'wgpolicyk8s.io'
+                  apiVersion: 'v1alpha2'
+                  plural: 'clusterpolicyreports'
+                - group: 'wgpolicyk8s.io'
+                  apiVersion: 'v1alpha2'
+                  plural: 'policyreports'
+                - group: 'kyverno.io'
+                  apiVersion: 'v1'
+                  plural: 'clusterpolicies'
+              frontend:
+                podDelete:
+                  enabled: true
+              serviceLocatorMethod:
+                type: 'multiTenant'
+              clusterLocatorMethods:
+                - type: 'config'
+                  clusters:
+                    # The url below is not utilized as it is set; it is defined to avoid a regression in the k8s plugin, which
+                    # utilizes the k8s api directly via serviceaccount and no URL is necessary, but will fail startup without one defined.
+                    - url: http://127.0.0.1:9999
+                      name: bigbang-dev
+                      authProvider: 'serviceAccount'
+                      skipTLSVerify: false
+                      skipMetricsLookup: true
+            catalog:
+              rules:
+                - allow: [Component, API, System, Location, Template, User, Group]
+              locations:
+                - type: file
+                  target: ./catalog/*.yaml
+                - type: file
+                  target: ./template/*.yaml
+                # The following is an example of how users can ingest component catalog YAML at runtime via values
+                # remotely, allowing them to define and manage their own software catalogs externally alongside bigbang.
+                #- type: url
+                #  target: https://repo1.dso.mil/big-bang/apps/sandbox/backstage/-/raw/main/backstage/examples/org.yaml 
     istio:
       hosts:
         - names:

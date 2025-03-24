@@ -1,7 +1,7 @@
 <!-- Warning: Do not manually edit this file. See notes on gluon + helm-docs at the end of this file for more information. -->
 # backstage
 
-![Version: 1.9.6-bb.4](https://img.shields.io/badge/Version-1.9.6--bb.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v1.31.1](https://img.shields.io/badge/AppVersion-v1.31.1-informational?style=flat-square) ![Maintenance Track: unknown](https://img.shields.io/badge/Maintenance_Track-unknown-red?style=flat-square)
+![Version: 1.9.6-bb.5](https://img.shields.io/badge/Version-1.9.6--bb.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v1.31.1](https://img.shields.io/badge/AppVersion-v1.31.1-informational?style=flat-square) ![Maintenance Track: unknown](https://img.shields.io/badge/Maintenance_Track-unknown-red?style=flat-square)
 
 A Helm chart for deploying a Backstage application
 
@@ -92,8 +92,6 @@ helm install backstage chart/
 | backstage.backstage.extraAppConfig | list | `[]` | Extra app configuration files to inline into command arguments |
 | backstage.backstage.extraContainers | list | `[]` | Deployment sidecars |
 | backstage.backstage.extraEnvVarsCM | list | `[]` | Backstage container environment variables from existing ConfigMaps |
-| backstage.backstage.extraVolumeMounts | list | `[]` | Backstage container additional volume mounts |
-| backstage.backstage.extraVolumes | list | `[]` | Backstage container additional volumes |
 | backstage.backstage.extraEnvVars | list | `[]` | Backstage container environment variables |
 | backstage.backstage.extraEnvVarsSecrets | list | `[]` | Backstage container environment variables from existing Secrets |
 | backstage.backstage.initContainers | list | `[]` | Backstage container init containers |
@@ -154,6 +152,11 @@ helm install backstage chart/
 | metrics.serviceMonitor.labels | object | `{}` | Additional ServiceMonitor labels |
 | metrics.serviceMonitor.interval | string | `nil` | ServiceMonitor scrape interval |
 | metrics.serviceMonitor.path | string | `"/metrics"` | ServiceMonitor endpoint path <br /> Note that the /metrics endpoint is NOT present in a freshly scaffolded Backstage app. To setup, follow the [Prometheus metrics tutorial](https://github.com/backstage/backstage/blob/master/contrib/docs/tutorials/prometheus-metrics.md). |
+| backstage.backstage.extraVolumeMounts[0].name | string | `"catalog-bigbang"` |  |
+| backstage.backstage.extraVolumeMounts[0].mountPath | string | `"/app/catalog/"` |  |
+| backstage.backstage.extraVolumes[0].name | string | `"catalog-bigbang"` |  |
+| backstage.backstage.extraVolumes[0].configMap.name | string | `"catalog-bigbang"` |  |
+| monitoring | object | `{"enabled":false}` | Bigbang addons.  These are upstream values from bigbang chart so typically not required to modify these.  # Helm does not carry values undeclared to child charts. Used for development purposes. |
 | domain | string | `"dev.bigbang.mil"` |  |
 | networkPolicies.enabled | bool | `false` | Toggle networkPolicies |
 | networkPolicies.controlPlaneCidr | string | `"0.0.0.0/0"` | Control Plane CIDR, defaults to 0.0.0.0/0, use `kubectl get endpoints -n default kubernetes` to get the CIDR range needed for your cluster Must be an IP CIDR range (x.x.x.x/x - ideally with /32 for the specific IP of a single endpoint, broader range for multiple masters/endpoints) Used by package NetworkPolicies to allow Kube API access |

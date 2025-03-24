@@ -4,9 +4,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
+## [1.9.6-bb.5] - 2025-03-21
+
+### Added
+
+- dynamic component catalog definitions for bigbang components
+- unbound appconfig from static container to values definitions
+
 ## [1.9.6-bb.4] - 2025-03-13
 
-### Adde
+### Added
 
 - base deployment component, kyverno policy component, base API relations
 

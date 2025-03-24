@@ -146,10 +146,10 @@ backstage:
     extraEnvVarsCM: []
 
     # -- Backstage container additional volume mounts
-    extraVolumeMounts: []
+    #extraVolumeMounts: []
 
     # -- Backstage container additional volumes
-    extraVolumes: []
+    #extraVolumes: []
 
     # -- Backstage container environment variables
     extraEnvVars: []
@@ -459,6 +459,21 @@ metrics:
     path: /metrics
 
 # BigBang configuration
+
+## Dynamic catalog configuration: the following allows catalogs to be built for bigbang based on enabled bigbang addons and packages.
+backstage:
+  backstage: 
+    extraVolumeMounts:
+      - name: catalog-bigbang
+        mountPath: "/app/catalog/"
+    extraVolumes:
+      - name: catalog-bigbang
+        configMap:
+          name: catalog-bigbang
+
+# -- Bigbang addons.  These are upstream values from bigbang chart so typically not required to modify these. 
+## Helm does not carry values undeclared to child charts. Used for development purposes.
+
 
 ## The below configuration enables grafana from a new deployment.
 ## See https://repo1.dso.mil/big-bang/apps/sandbox/backstage/-/blob/main/docs/Grafana.md for deploying without grafana, or utilizing an existing deployment.

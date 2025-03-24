@@ -183,8 +183,11 @@ COPY --from=build --chown=node:node /app/packages/backend/dist/bundle/ ./
 # Copy any other files that we need at runtime
 COPY --chown=node:node app-config*.yaml ./
 
-# This will include the examples, if you don't need these simply remove this line
-COPY --chown=node:node examples ./examples
+# This creates the directory for dynamic catalogs
+COPY --chown=node:node catalog ./catalog
+
+# This creates the directory for example template for manual creation
+COPY --chown=node:node template ./template
 
 # This switches many Node.js dependencies to production mode.
 ENV NODE_ENV=production
@@ -193,7 +196,7 @@ ENV NODE_ENV=production
 ENV NODE_OPTIONS="--no-node-snapshot"
 
 # Local command
-CMD ["node", "packages/backend", "--config", "app-config.yaml", "--config", "app-config.docker.yaml"]
+CMD ["node", "packages/backend", "--config", "app-config.yaml", "--config", "app-config-from-configmap.yaml"]
 # Dev command
 # CMD ["node", "packages/backend", "--config", "app-config.yaml"]
 # Prod command (this is the one that should be uncommented when merging to main)
