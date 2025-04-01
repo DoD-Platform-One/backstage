@@ -151,6 +151,15 @@ backstage:
     # -- Backstage container additional volumes
     #extraVolumes: []
 
+## Dynamic catalog configuration: the following allows catalogs to be built for bigbang based on enabled bigbang addons and packages.
+    extraVolumeMounts:
+      - name: catalog-bigbang
+        mountPath: "/app/catalog/"
+    extraVolumes:
+      - name: catalog-bigbang
+        configMap:
+          name: catalog-bigbang
+
     # -- Backstage container environment variables
     extraEnvVars: []
 
@@ -257,7 +266,43 @@ backstage:
     #   app:
     #     baseUrl: https://somedomain.tld
     # -- Generates ConfigMap and configures it in the Backstage pods
+
     appConfig: {}
+##################################################################################################################################
+# keycloak integration                                                                                                           #
+# https://github.com/backstage/community-plugins/blob/main/workspaces/keycloak/plugins/catalog-backend-module-keycloak/README.md #
+################################################################################################################################## 
+#       app:
+#         # please replace variables below with real value
+#         baseUrl: https://backstage.${DOMAIN}
+#       backend:
+#         baseUrl: https://backstage.${DOMAIN}
+#         listen:
+#           port: 7007
+#       auth:
+#       ### Providing an auth.session.secret will enable session support in the auth-backend. you can use *"openssl rand -hex 64"* to generate a random secret from cli or use the value provided below.
+#         session:
+#           secret: "XxNl2b+/hGH7w7RJk8c5LXNOBh6+kzysxgYXlMK5Pgo="
+#       # see https://backstage.io/docs/auth/ to learn about auth providers
+#         environment: development
+#         providers:
+#           keycloak:
+#             development:
+#             # please replace variables below with real value
+#               metadataUrl: "https://${KEYCLOAK_BASE_URL}/auth/realms/backstage/.well-known/openid-configuration"
+#               clientId: "${KEYCLOAK_CLIENT_ID}"
+#               clientSecret: "${KEYCLOAK_CLIENT_SECRET}"
+#               prompt: auto
+#  ##  Catalog is an optional config for loading users and group from keycloak. 
+#       catalog:
+#         providers:
+#           keycloakOrg:
+#             default:
+#               baseUrl: '${KEYCLOAK_BASE_URL}/auth'
+#               loginRealm: '${KEYCLOAK_LOGIN_REALM}'
+#               realm: '${KEYCLOAK_REALM}'
+#               clientId: '${KEYCLOAK_CLIENT_ID}'
+#               clientSecret: '${KEYCLOAK_CLIENT_SECRET}'  
 
     # -- Affinity for pod assignment
     # <br /> Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
@@ -459,17 +504,6 @@ metrics:
     path: /metrics
 
 # BigBang configuration
-
-## Dynamic catalog configuration: the following allows catalogs to be built for bigbang based on enabled bigbang addons and packages.
-backstage:
-  backstage: 
-    extraVolumeMounts:
-      - name: catalog-bigbang
-        mountPath: "/app/catalog/"
-    extraVolumes:
-      - name: catalog-bigbang
-        configMap:
-          name: catalog-bigbang
 
 # -- Bigbang addons.  These are upstream values from bigbang chart so typically not required to modify these. 
 ## Helm does not carry values undeclared to child charts. Used for development purposes.
