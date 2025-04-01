@@ -13,6 +13,7 @@ import {
 import { ScaffolderPage, scaffolderPlugin } from '@backstage/plugin-scaffolder';
 import { orgPlugin } from '@backstage/plugin-org';
 import { SearchPage } from '@backstage/plugin-search';
+
 import {
   TechDocsIndexPage,
   techdocsPlugin,
@@ -21,7 +22,7 @@ import {
 import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
 import { ReportIssue } from '@backstage/plugin-techdocs-module-addons-contrib';
 import { UserSettingsPage } from '@backstage/plugin-user-settings';
-import { apis } from './apis';
+import { apis, kcOIDCAuthApiRef } from './apis';
 import { entityPage } from './components/catalog/EntityPage';
 import { searchPage } from './components/search/SearchPage';
 import { Root } from './components/Root';
@@ -38,13 +39,13 @@ import { RequirePermission } from '@backstage/plugin-permission-react';
 import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/alpha';
 
 /* custom imports */
-import { githubAuthApiRef } from '@backstage/core-plugin-api';
 
-const githubAuthCfg = {
-  id: 'github-auth-provider',
-  title: 'GitHub',
-  message: 'Sign in using GitHub',
-  apiRef: githubAuthApiRef,
+// NOTE: Here you add the example provider to display Sign-in page
+const keycloakProvider = {
+  id: 'keycloak',
+  title: 'Keycloak SSO',
+  message: 'Sign in with Keycloak SSO',
+  apiRef: kcOIDCAuthApiRef,
 }
 
 const app = createApp({
@@ -70,15 +71,10 @@ const app = createApp({
     SignInPage: props => (
       <SignInPage
         {...props}
-        auto providers={
+        auto 
+        providers={
           [
-            'guest', githubAuthCfg,
-            //{
-            //  id: 'github-auth-provider',
-            //  title: 'GitHub backup',
-            //  message: 'Sign in using GitHub',
-            //  apiRef: githubAuthApiRef,
-            //},
+            'guest', keycloakProvider
           ]
         }
       />
