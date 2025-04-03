@@ -1,6 +1,6 @@
 # Backstage Development overrides
 
-### make sure to replace git branch and image tag with your development branch and tag values!
+### make sure to replace git branch and image tag with your development branch and tag values
 
 ```yaml
 clusterAuditor:
@@ -29,9 +29,6 @@ fluentbit:
 
 monitoring:
   enabled: true
-  git:
-    tag: null
-    branch: "grafana-netpol"
 
 neuvector:
   enabled: false

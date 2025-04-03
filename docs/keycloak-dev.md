@@ -14,10 +14,10 @@ This guide assumes that Keycloak is deployed with a realm other than "master" (e
       - For authenticationflow select the following
            - standardFlow
            - serviceAccount  //this is only required if catalog is to be enabled.
-      - Base URL: Set to <https://backstage.${DOMAIN}/*> 
+      - Base URL: Set to <https://backstage.${DOMAIN}/*>
       - Valid Redirect URIs: Add the following URLs:
           - <https://backstage.${DOMAIN}/api/auth/keycloak/handler/frame/*>
-      - Web Origins: Add the following URLs: 
+      - Web Origins: Add the following URLs:
           - <https://backstage.${DOMAIN}/*>
       - ServiceAccount tab: Add the following roles. //this is only required if catalog is enabled.
             -  query-group

@@ -90,6 +90,7 @@ This package has a number of additions to the [upstream helm chart](https://upst
 Here's the section of the `chart/values.yaml` file where these additions are configured:
 
 These values are required to be at the top of values.yaml as they are anchoring values and are consumed later in the values fileas extraEnvVars for the containers to utilize in config.
+
 ```yaml
 grafana:
   # The following is the endpoint at which grafana API calls will be accessed through
@@ -142,9 +143,8 @@ initContainers:
 ```
 
 ## chart/templates/bigbang/kyverno/*
+
 Added to utilize grafana API generation via a clusterpolicy that syncs the default grafana credentials at "monitoring-grafana" to backstage namespace on first create
-
-
 
 ## Monitoring
 

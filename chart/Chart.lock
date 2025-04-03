@@ -8,5 +8,8 @@ dependencies:
 - name: postgresql
   repository: oci://registry-1.docker.io/bitnamicharts
   version: 12.10.0
-digest: sha256:6b9c90f5cafcd59016a41c8c3b63d5da2570fa86279f1966024045b53015e7f4
-generated: "2025-02-20T12:58:03.316556-06:00"
+- name: gluon
+  repository: oci://registry1.dso.mil/bigbang
+  version: 0.5.14
+digest: sha256:e14230146f2524d3e9748eb5255af780993739ea77febe1d43c34cd1cfc03441
+generated: "2025-04-02T14:30:43.832541-05:00"

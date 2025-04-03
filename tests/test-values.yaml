@@ -1,0 +1,111 @@
+backstage:
+  backstage:
+    image:
+      tag: "helm-testing"
+    appConfig:
+      organization:
+        name: "P1"
+      app:
+        baseUrl: "http://localhost:7007"
+      backend:
+        baseUrl: "http://localhost:7007"
+        listen:
+          port: 7007
+        reading:
+          allow:
+            - host: 'repo1.dso.mil'
+      auth:
+        environment: development
+        providers:
+          guest:
+            # because we use NODE_ENV: production, we must set this to allow guest development login
+            dangerouslyAllowOutsideDevelopment: true
+          keycloak:
+            development:
+              metadataUrl: "https://example.com"
+              clientId: "client-id"
+              clientSecret: "public"
+              #prompt can be set to 'auto' or 'login'
+              prompt: auto
+      proxy:
+        '/grafana/api':
+          # May be a public or an internal DNS
+          target: "https://example.com"
+          headers:
+            Authorization: "Bearer abc-123"
+
+      grafana:
+        # Publicly accessible domain
+        domain: "https://example.com"
+
+        # Is unified alerting enabled in Grafana?
+        # See: https://grafana.com/blog/2021/06/14/the-new-unified-alerting-system-for-grafana-everything-you-need-to-know/
+        # Optional. Default: false
+        unifiedAlerting: false
+
+      kubernetes:
+        customResources:
+          - group: 'networking.istio.io'
+            apiVersion: 'v1'
+            plural: 'virtualservices'
+          - group: 'networking.k8s.io'
+            apiVersion: 'v1'
+            plural: 'networkpolicies'
+          - group: 'security.istio.io'
+            apiVersion: 'v1'
+            plural: 'authorizationpolicies'
+          - group: 'security.istio.io'
+            apiVersion: 'v1'
+            plural: 'peerauthentications'
+          - group: 'source.toolkit.fluxcd.io'
+            apiVersion: 'v1'
+            plural: 'helmcharts'
+          - group: 'helm.toolkit.fluxcd.io'
+            apiVersion: 'v2'
+            plural: 'helmreleases'
+          - group: 'source.toolkit.fluxcd.io'
+            apiVersion: 'v1'
+            plural: 'gitrepositories'
+          - group: 'wgpolicyk8s.io'
+            apiVersion: 'v1alpha2'
+            plural: 'clusterpolicyreports'
+          - group: 'wgpolicyk8s.io'
+            apiVersion: 'v1alpha2'
+            plural: 'policyreports'
+          - group: 'kyverno.io'
+            apiVersion: 'v1'
+            plural: 'clusterpolicies'
+        frontend:
+          podDelete:
+            enabled: true
+        serviceLocatorMethod:
+          type: 'multiTenant'
+        clusterLocatorMethods:
+          - type: 'config'
+            clusters:
+              - url: http://127.0.0.1:9999
+                name: bigbang-dev
+                authProvider: 'serviceAccount'
+                skipTLSVerify: false
+                skipMetricsLookup: true
+      catalog:
+        providers:
+          keycloakOrg:
+            default:
+              baseUrl: "https://example.com"
+              loginRealm: "realm-id"
+              realm: "realm-id"
+              clientId: "client-id"
+              clientSecret: "public"
+        rules:
+          - allow: [ Component, API, System, Location, Template, User, Group ]
+        locations:
+          - type: file
+            target: ./catalog/*.yaml
+          - type: file
+            target: ./template/*.yaml
+
+bbtests:
+  enabled: true
+
+

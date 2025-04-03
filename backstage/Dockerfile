@@ -23,6 +23,7 @@ COPY packages packages
 USER root
 
 RUN find packages \! -name "package.json" -mindepth 2 -maxdepth 2 -exec rm -rf {} \+
+RUN mkdir -p /home/node/.cache/node && chown -R node:node /home/node
 
 # switch back to node
 USER node
@@ -83,6 +84,7 @@ RUN apk update && \
 USER node
 WORKDIR /app
 
+COPY --from=packages --chown=node:node /home/node /home/node
 COPY --from=packages --chown=node:node /app .
 COPY --from=packages --chown=node:node /app/.yarn ./.yarn
 COPY --from=packages --chown=node:node /app/.yarnrc.yml  ./
@@ -165,6 +167,7 @@ USER node
 WORKDIR /app
 
 # Copy the install dependencies from the build stage and context
+COPY --from=build --chown=node:node /home/node /home/node
 COPY --from=build --chown=node:node /app/.yarn ./.yarn
 COPY --from=build --chown=node:node /app/.yarnrc.yml  ./
 COPY --from=build --chown=node:node /app/backstage.json ./
@@ -196,7 +199,7 @@ ENV NODE_ENV=production
 ENV NODE_OPTIONS="--no-node-snapshot"
 
 # Local command
-CMD ["node", "packages/backend", "--config", "app-config.yaml", "--config", "app-config-from-configmap.yaml"]
+CMD ["node", "packages/backend", "--config", "app-config.yaml"]
 # Dev command
 # CMD ["node", "packages/backend", "--config", "app-config.yaml"]
 # Prod command (this is the one that should be uncommented when merging to main)

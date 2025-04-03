@@ -1,0 +1,21 @@
+{{- include "gluon.tests.cypress-configmap.overrides" (list . "backstage.cypress-configmap") }}
+{{- define "backstage.cypress-configmap" }}
+metadata:
+  labels:
+    helm.sh/chart: {{ include "app.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/part-of: backstage
+    app.kubernetes.io/component: {{ include "app.name" . }}
+{{- end }}
+---
+{{- include "gluon.tests.cypress-runner.overrides" (list . "backstage.cypress-runner") -}}
+{{- define "backstage.cypress-runner" -}}
+metadata:
+  labels:
+    helm.sh/chart: {{ include "app.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/part-of: backstage
+    app.kubernetes.io/component: {{ include "app.name" . }}
+{{- end }}
