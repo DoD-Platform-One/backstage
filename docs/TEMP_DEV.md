@@ -41,18 +41,19 @@ Upon publishing your development branch tag, you can modify your image tag overr
 
 ## Devbox
 
-Devbox is a command-line tool that helps developers create consistent, isolated development environments by leveraging 
-the Nix package manager. It simplifies the process of installing and managing dependencies across different projects, 
+Devbox is a command-line tool that helps developers create consistent, isolated development environments by leveraging
+the Nix package manager. It simplifies the process of installing and managing dependencies across different projects,
 ensuring reproducible builds for every team member.
 
-The project has a devbox config. This will ensure you have the specific version of the dependencies needed to build this 
+The project has a devbox config. This will ensure you have the specific version of the dependencies needed to build this
 project.
 
 ### Installation instructions
+
 Installation is straight forward. Run `curl -fsSL https://get.jetify.com/devbox | bash` if you are on MacOS/Linux. For
 other OS install instructions, refer to the documentation:
 
-https://www.jetify.com/docs/devbox/installing_devbox/
+<https://www.jetify.com/docs/devbox/installing_devbox/>
 
 > NOTE: It is best practice to review any scripts you download from the internet before just blindly running them.
 
@@ -62,10 +63,9 @@ https://www.jetify.com/docs/devbox/installing_devbox/
 
 Once you have devbox installed, simply enter the directory where you have cloned backstage and run `devbox shell`. This
 will fire up devbox, which on first run will pull down the appropriate Nix packages and setup the development environment.
-From there the commands listed above like `make run` should function without the need to worry about development 
-dependencies. 
-
+From there the commands listed above like `make run` should function without the need to worry about development
+dependencies.
 
 ## Overrides
 
-### see [dev-overrides.md](./docs/dev-overrides.md) for current overrides.
+### see [dev-overrides.md](./docs/dev-overrides.md) for current overrides

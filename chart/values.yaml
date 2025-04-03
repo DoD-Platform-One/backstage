@@ -18,11 +18,11 @@ global:
 # Bigbang reusable anchors for defining grafana URLs within the pods environment vars and configs
 grafana:
   # The following is the endpoint at which grafana API calls will be accessed through
-  url: &grafanaUrl ""
+  url: &grafanaUrl "monitoring-grafana.monitoring.svc.cluster.local"
   http: &grafanaHttp "http"
 
   # The following is the rewritten URL at which backstage grafana iframe will hyperlink to
-  externalUrl: &grafanaExternalUrl ""
+  externalUrl: &grafanaExternalUrl "https://example.com"
 
 # -- Common parameters
 
@@ -116,13 +116,13 @@ backstage:
 
       # -- Specify a imagePullPolicy.
       # Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
-      # <br /> Ref: https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy
+      #  Ref: https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy
       pullPolicy: Always
 
       # -- Optionally specify an array of imagePullSecrets.
       #  Secrets must be manually created in the namespace.
-      # <br /> Ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
-      # <br /> E.g: `pullSecrets: [myRegistryKeySecretName]`
+      #  Ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+      #  E.g: `pullSecrets: [myRegistryKeySecretName]`
       pullSecrets: [private-registry]
 
 
@@ -134,7 +134,7 @@ backstage:
     command: ["node", "packages/backend"]
 
     # -- Backstage container command arguments
-    args: []
+    args: ["--config", "app-config.yaml"]
 
     # -- Extra app configuration files to inline into command arguments
     extraAppConfig: []
@@ -173,7 +173,7 @@ backstage:
     installDir: /app
 
     # -- Resource requests/limits
-    # <br /> Ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#resource-requests-and-limits-of-pod-and-container
+    #  Ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#resource-requests-and-limits-of-pod-and-container
     # <!-- E.g.
     # resources:
     #   limits:
@@ -192,7 +192,7 @@ backstage:
 
     # -- Readiness Probe
     # Backstage doesn't provide any health endpoints by default. A simple one can be added like this: https://backstage.io/docs/plugins/observability/#health-checks
-    # <br /> Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes
+    #  Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes
     # <!-- E.g.
     # readinessProbe:
     #   failureThreshold: 3
@@ -208,7 +208,7 @@ backstage:
 
     # -- Liveness Probe
     # Backstage doesn't provide any health endpoints by default. A simple one can be added like this: https://backstage.io/docs/plugins/observability/#health-checks
-    # <br /> Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes
+    #  Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes
     # <!-- E.g.
     # livenessProbe:
     #   failureThreshold: 3
@@ -224,7 +224,7 @@ backstage:
 
       # -- Startup Probe
     # Backstage doesn't provide any health endpoints by default. A simple one can be added like this: https://backstage.io/docs/plugins/observability/#health-checks
-    # <br /> Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes
+    #  Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes
     # <!-- E.g.
     # startupProbe:
     #   failureThreshold: 3
@@ -240,7 +240,7 @@ backstage:
 
     # -- Security settings for a Pod.
     #  The security settings that you specify for a Pod apply to all Containers in the Pod.
-    # <br /> Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
+    #  Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
     podSecurityContext: 
         runAsUser: 473
         runAsGroup: 473
@@ -251,7 +251,7 @@ backstage:
         
     
     # -- Security settings for a Container.
-    # <br /> Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
+    #  Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
     containerSecurityContext: 
         capabilities:
             drop:
@@ -271,7 +271,7 @@ backstage:
 ##################################################################################################################################
 # keycloak integration                                                                                                           #
 # https://github.com/backstage/community-plugins/blob/main/workspaces/keycloak/plugins/catalog-backend-module-keycloak/README.md #
-################################################################################################################################## 
+##################################################################################################################################
 #       app:
 #         # please replace variables below with real value
 #         baseUrl: https://backstage.${DOMAIN}
@@ -293,7 +293,7 @@ backstage:
 #               clientId: "${KEYCLOAK_CLIENT_ID}"
 #               clientSecret: "${KEYCLOAK_CLIENT_SECRET}"
 #               prompt: auto
-#  ##  Catalog is an optional config for loading users and group from keycloak. 
+#  ##  Catalog is an optional config for loading users and group from keycloak.
 #       catalog:
 #         providers:
 #           keycloakOrg:
@@ -302,18 +302,18 @@ backstage:
 #               loginRealm: '${KEYCLOAK_LOGIN_REALM}'
 #               realm: '${KEYCLOAK_REALM}'
 #               clientId: '${KEYCLOAK_CLIENT_ID}'
-#               clientSecret: '${KEYCLOAK_CLIENT_SECRET}'  
+#               clientSecret: '${KEYCLOAK_CLIENT_SECRET}'
 
     # -- Affinity for pod assignment
-    # <br /> Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+    #  Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
     affinity: {}
 
     # -- Node labels for pod assignment
-    # <br /> Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector
+    #  Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector
     nodeSelector: {}
 
     # -- Node tolerations for server scheduling to nodes with taints
-    # <br /> Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/
+    #  Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/
     tolerations: []
     #  - key: "key"
     #    operator: "Equal|Exists"
@@ -357,23 +357,23 @@ service:
 
   # -- Control where client requests go, to the same pod or round-robin
   # (values: `ClientIP` or `None`)
-  # <br /> Ref: https://kubernetes.io/docs/concepts/services-networking/service/#session-stickiness
+  #  Ref: https://kubernetes.io/docs/concepts/services-networking/service/#session-stickiness
   sessionAffinity: None
 
   # -- Backstage service Cluster IP
   #
-  # <br /> E.g `clusterIP: None`
+  #  E.g `clusterIP: None`
   clusterIP: ""
 
   # -- Backstage service Load Balancer IP
   #
-  # <br /> Ref: https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer
+  #  Ref: https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer
   loadBalancerIP: ""
 
   # -- Load Balancer sources
   #
-  # <br /> Ref: https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer
-  # <br /> E.g `loadBalancerSourceRanges: [10.10.10.0/24]`
+  #  Ref: https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer
+  #  E.g `loadBalancerSourceRanges: [10.10.10.0/24]`
   loadBalancerSourceRanges: []
 
   # -- Backstage service external traffic policy
@@ -483,11 +483,11 @@ serviceAccount:
 metrics:
 
   # -- ServiceMonitor configuration
-  # <br /> Allows configuring your backstage instance as a scrape target for [Prometheus](https://github.com/prometheus/prometheus) using a ServiceMonitor custom resource that [Prometheus Operator](https://github.com/prometheus-operator/prometheus-operator) can understand.
+  #  Allows configuring your backstage instance as a scrape target for [Prometheus](https://github.com/prometheus/prometheus) using a ServiceMonitor custom resource that [Prometheus Operator](https://github.com/prometheus-operator/prometheus-operator) can understand.
   serviceMonitor:
 
     # -- If enabled, a ServiceMonitor resource for Prometheus Operator is created
-    # <br /> Prometheus Operator must be installed in your cluster prior to enabling.
+    #  Prometheus Operator must be installed in your cluster prior to enabling.
     enabled: false
 
     # -- ServiceMonitor annotations
@@ -500,12 +500,12 @@ metrics:
     interval: null
 
     # -- ServiceMonitor endpoint path
-    # <br /> Note that the /metrics endpoint is NOT present in a freshly scaffolded Backstage app. To setup, follow the [Prometheus metrics tutorial](https://github.com/backstage/backstage/blob/master/contrib/docs/tutorials/prometheus-metrics.md).
+    #  Note that the /metrics endpoint is NOT present in a freshly scaffolded Backstage app. To setup, follow the [Prometheus metrics tutorial](https://github.com/backstage/backstage/blob/master/contrib/docs/tutorials/prometheus-metrics.md).
     path: /metrics
 
 # BigBang configuration
 
-# -- Bigbang addons.  These are upstream values from bigbang chart so typically not required to modify these. 
+# Bigbang addons.  These are upstream values from bigbang chart so typically not required to modify these.
 ## Helm does not carry values undeclared to child charts. Used for development purposes.
 
 
@@ -554,6 +554,7 @@ metrics:
 #              - ALL
 ############################################################################################
 
+# -- Base domain to use.
 domain: dev.bigbang.mil
 
 networkPolicies:
@@ -633,3 +634,19 @@ istio:
     # PERMISSIVE = Allow both plain text and mutual TLS traffic
     mode: STRICT
   namespace: "istio-system"
+
+# Big Bang Continuous Integration Testing Only
+bbtests:
+  enabled: false
+  cypress:
+    artifacts: true
+    envs:
+      cypress_url: "http://backstage:7007"
+      cypress_timeout: "120000"
+    resources:
+      requests:
+        cpu: 4
+        memory: 4Gi
+      limits:
+        cpu: 4
+        memory: 8Gi

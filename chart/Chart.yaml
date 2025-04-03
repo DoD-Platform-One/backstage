@@ -25,6 +25,9 @@ dependencies:
     name: postgresql
     repository: oci://registry-1.docker.io/bitnamicharts
     version: 12.10.0
+  - name: gluon
+    version: "0.5.14"
+    repository: "oci://registry1.dso.mil/bigbang"
 home: https://backstage.io
 icon: https://raw.githubusercontent.com/cncf/artwork/master/projects/backstage/icon/color/backstage-icon-color.svg
 keywords:
@@ -43,5 +46,5 @@ sources:
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 1.9.6-bb.6
+version: 1.9.6-bb.7
 appVersion: v1.31.1

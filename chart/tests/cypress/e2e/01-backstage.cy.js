@@ -30,8 +30,8 @@ describe(`Backstage smoke tests [baseUrl: ${testConfig.baseUrl}]`, testConfig, (
 
   it('Should be able to log into the system and view the example website', function() {
 
-    cy.visit('/catalog/default/component/base-deployment');
-    cy.get('span[title="component:default/base-deployment | website"]').should('have.text', 'base-deployment');
+    cy.visit('catalog/default/component/base-bigbang-resources');
+    cy.get('span[title^="component:default/base-bigbang-resources"]').should('have.text', 'base-bigbang-resources');
 
 
   });

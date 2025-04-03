@@ -4,6 +4,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
+## [1.9.6-bb.7] - 2025-04-03
+
+### Added
+
+- helm tests
+- cypress test
+
 ## [1.9.6-bb.6] - 2025-03-25
 
 ### Added
@@ -23,13 +30,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 - base deployment component, kyverno policy component, base API relations
 
-
 ## [1.9.6-bb.3] - 2025-02-27
 
 ### Added
 
 - initial grafana plugin
-
 
 ## [1.9.6-bb.2] - 2025-02-14
 

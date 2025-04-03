@@ -8,7 +8,6 @@ Backstage should be configured to work with P1 SSO/`login.dso.mil` for keycloak 
 
 2. You will need the following values file saved locally: `keycloak-dev-values.yaml` ([link](https://repo1.dso.mil/big-bang/bigbang/-/blob/master/docs/assets/configs/example/keycloak-dev-values.yaml?ref_type=heads)).
 
-
 ### Deploying
 
 Before deploying Backstage you must ensure keycloak dev instance has been deployed and configured with client for backstage. Use the overrides file below.
@@ -201,9 +200,9 @@ addons:
               resolution: DNS
   ```
 
-
 2. For backstage override file see sample below:  Please replace all keycloak variable with real values.
      `backstage_override.yaml`
+
   ```yaml
   clusterAuditor:
     enabled: false
