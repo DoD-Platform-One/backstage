@@ -4,6 +4,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
+## [1.9.6-bb.8] - 2025-03-28
+
+### Added
+
+- backstage resource limits and requests settings for QoS in values.yaml
+- slightly smaller backstage resource limits and requests settings for QoS in test-values.yaml
+
 ## [1.9.6-bb.7] - 2025-04-03
 
 ### Added
@@ -16,6 +23,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Added
 
 - initial keycloak plugin
+
+## [1.9.6-bb.5] - 2025-03-21
+
+### Added
+
+- backstage resource limits and requests settings for QoS in values.yaml
+- slightly smaller backstage resource limits and requests settings for QoS in test-values.yaml
 
 ## [1.9.6-bb.5] - 2025-03-21
 
