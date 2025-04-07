@@ -107,5 +107,10 @@ backstage:
 
 bbtests:
   enabled: true
-
-
+  resources:
+    limits:
+      cpu: 2000m
+      memory: 4000Mi
+    requests:
+      cpu: 1000m
+      memory: 2000Mi
