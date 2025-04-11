@@ -4,6 +4,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
+## [1.9.6-bb.9] - 2025-04-10
+
+### Changed
+
+- Migrated application source code to https://repo1.dso.mil/big-bang/apps/developer-tools/backstage
+
 ## [1.9.6-bb.8] - 2025-03-28
 
 ### Added

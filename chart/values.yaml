@@ -161,7 +161,16 @@ backstage:
           name: catalog-bigbang
 
     # -- Backstage container environment variables
-    extraEnvVars: []
+    #extraEnvVars: []
+# Enable grafana URL endpoints so that backstage can start properly - these are required even if grafana is not
+# enabled due to startup and plugin process.
+    extraEnvVars:
+      - name: GRAFANA_HTTP
+        value: *grafanaHttp
+      - name: GRAFANA_URL
+        value: *grafanaUrl
+      - name: GRAFANA_DOMAIN
+        value: *grafanaExternalUrl
 
     # -- Backstage container environment variables from existing Secrets
     extraEnvVarsSecrets: []
@@ -267,7 +276,99 @@ backstage:
     #     baseUrl: https://somedomain.tld
     # -- Generates ConfigMap and configures it in the Backstage pods
 
-    appConfig: {}
+    appConfig: 
+      organization:
+        name: "My Company"
+      app:
+        baseUrl: http://localhost:7007
+      backend:
+        baseUrl: http://localhost:7007       
+      # Enable the following if utilizing `appConfig.catalog.locations.type: url, replace host with required URL.
+      #  reading:
+      #    allow:
+      #      - host: 'repo1.dso.mil'
+      auth:
+        environment: development
+        providers:
+          # Note: enabling "dangerouslyAllowOutsideDevelopment" gives all UI access to all users
+          # with no restrictions.  Use for development / testing only!
+          guest: {}
+            #dangerouslyAllowOutsideDevelopment: true
+      proxy:
+        # These values are enabled by using the grafana section near the bottom under BigBang configuration.
+        # They exist as example strings if grafana is not enabled to allow backstage to start. 
+        '/grafana/api':
+          # May be a public or an internal DNS
+          target: ${GRAFANA_HTTP}://${GRAFANA_URL}
+          headers:
+            Authorization: Bearer ${GRAFANA_TOKEN}
+
+      grafana:
+        # Publicly accessible domain
+        domain: ${GRAFANA_DOMAIN}
+
+        # Is unified alerting enabled in Grafana?
+        # See: https://grafana.com/blog/2021/06/14/the-new-unified-alerting-system-for-grafana-everything-you-need-to-know/
+        # Optional. Default: false
+        unifiedAlerting: false
+
+      kubernetes:
+        # We enable all istio/kyverno resource discovery by default.
+        customResources:
+          - group: 'networking.istio.io'
+            apiVersion: 'v1'
+            plural: 'virtualservices'
+          - group: 'networking.k8s.io'
+            apiVersion: 'v1'
+            plural: 'networkpolicies'
+          - group: 'security.istio.io'
+            apiVersion: 'v1'
+            plural: 'authorizationpolicies'
+          - group: 'security.istio.io'
+            apiVersion: 'v1'
+            plural: 'peerauthentications'
+          - group: 'source.toolkit.fluxcd.io'
+            apiVersion: 'v1'
+            plural: 'helmcharts'
+          - group: 'helm.toolkit.fluxcd.io'
+            apiVersion: 'v2'
+            plural: 'helmreleases'
+          - group: 'source.toolkit.fluxcd.io'
+            apiVersion: 'v1'
+            plural: 'gitrepositories'
+          - group: 'wgpolicyk8s.io'
+            apiVersion: 'v1alpha2'
+            plural: 'clusterpolicyreports'
+          - group: 'wgpolicyk8s.io'
+            apiVersion: 'v1alpha2'
+            plural: 'policyreports'
+          - group: 'kyverno.io'
+            apiVersion: 'v1'
+            plural: 'clusterpolicies'
+        frontend:
+          podDelete:
+            enabled: false
+        serviceLocatorMethod:
+          type: 'multiTenant'
+        clusterLocatorMethods:
+          - type: 'config'
+            clusters:
+              - url: http://127.0.0.1:9999
+                name: bigbang-dev
+                authProvider: 'serviceAccount'
+                skipTLSVerify: false
+                skipMetricsLookup: true
+      catalog:
+        rules:
+          - allow: [Component, API, System, Location, Template, User, Group]
+        locations:
+          - type: file
+            target: ./catalog/*.yaml
+          - type: file
+            target: ./template/*.yaml
+        # example URL type:
+        #  - type: url
+        #    target: https://repo1.dso.mil/big-bang/product/packages/backstage/-/raw/main/backstage/examples/org.yaml
 ##################################################################################################################################
 # keycloak integration                                                                                                           #
 # https://github.com/backstage/community-plugins/blob/main/workspaces/keycloak/plugins/catalog-backend-module-keycloak/README.md #
@@ -514,13 +615,6 @@ metrics:
 ############################################################################################
 #backstage:
 #  backstage:
-#    extraEnvVars:
-#      - name: GRAFANA_HTTP
-#        value: *grafanaHttp
-#      - name: GRAFANA_URL
-#        value: *grafanaUrl
-#      - name: GRAFANA_DOMAIN
-#        value: *grafanaExternalUrl
 #
 #    extraEnvVarsSecrets:
 #      - grafana-api-token
