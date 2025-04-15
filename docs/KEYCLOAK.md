@@ -1,6 +1,6 @@
-## Deploying Backstage with a Dev Instance of Keycloak
+# Deploying Backstage with a Dev Instance of Keycloak
 
-### Prerequisites
+## Prerequisites
 
 Backstage should be configured to work with P1 SSO/`login.dso.mil` for keycloak integration. To learn about deploying Backstage with a dev version of Keycloak, see [keycloak-dev.md](./keycloak-dev.md)
 

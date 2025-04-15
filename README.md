@@ -1,7 +1,7 @@
 <!-- Warning: Do not manually edit this file. See notes on gluon + helm-docs at the end of this file for more information. -->
 # backstage
 
-![Version: 1.9.6-bb.9](https://img.shields.io/badge/Version-1.9.6--bb.9-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v1.31.1](https://img.shields.io/badge/AppVersion-v1.31.1-informational?style=flat-square) ![Maintenance Track: unknown](https://img.shields.io/badge/Maintenance_Track-unknown-red?style=flat-square)
+![Version: 1.9.6-bb.10](https://img.shields.io/badge/Version-1.9.6--bb.10-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v1.31.1](https://img.shields.io/badge/AppVersion-v1.31.1-informational?style=flat-square) ![Maintenance Track: unknown](https://img.shields.io/badge/Maintenance_Track-unknown-red?style=flat-square)
 
 A Helm chart for deploying a Backstage application
 
@@ -15,6 +15,7 @@ A Helm chart for deploying a Backstage application
 
 This package has no upstream release note links on file. Please add some to [chart/Chart.yaml](chart/Chart.yaml) under `annotations.bigbang.dev/upstreamReleaseNotesMarkdown`.
 Example:
+
 ```yaml
 annotations:
   bigbang.dev/upstreamReleaseNotesMarkdown: |
@@ -37,7 +38,7 @@ Kubernetes: `>= 1.19.0-0`
 
 Install Helm
 
-https://helm.sh/docs/intro/install/
+<https://helm.sh/docs/intro/install/>
 
 ## Deployment
 
@@ -54,7 +55,7 @@ helm install backstage chart/
 |-----|------|---------|-------------|
 | global | object | See below | Global parameters Global Docker image parameters Please, note that this will override the image parameters, including dependencies, configured to use the global value Current available global Docker image parameters: imageRegistry, imagePullSecrets and storageClass |
 | global.imageRegistry | string | `""` | Global Docker image registry |
-| global.imagePullSecrets | list | `[]` | Global Docker registry secret names as an array </br> E.g. `imagePullSecrets: [myRegistryKeySecretName]` |
+| global.imagePullSecrets | list | `[]` | Global Docker registry secret names as an array  E.g. `imagePullSecrets: [myRegistryKeySecretName]` |
 | grafana.url | string | `"monitoring-grafana.monitoring.svc.cluster.local"` |  |
 | grafana.http | string | `"http"` |  |
 | grafana.externalUrl | string | `"https://example.com"` |  |
@@ -84,8 +85,8 @@ helm install backstage chart/
 | backstage.backstage.image.registry | string | `"registry1.dso.mil"` | Backstage image registry |
 | backstage.backstage.image.repository | string | `"bigbang-staging/backstage"` | Backstage image repository |
 | backstage.backstage.image.tag | string | `"initial-start"` | Backstage image tag (immutable tags are recommended) |
-| backstage.backstage.image.pullPolicy | string | `"Always"` | Specify a imagePullPolicy. Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'  Ref: https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy |
-| backstage.backstage.image.pullSecrets | list | `["private-registry"]` | Optionally specify an array of imagePullSecrets.  Secrets must be manually created in the namespace.  Ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/  E.g: `pullSecrets: [myRegistryKeySecretName]` |
+| backstage.backstage.image.pullPolicy | string | `"Always"` | Specify a imagePullPolicy. Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'  Ref: <https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy> |
+| backstage.backstage.image.pullSecrets | list | `["private-registry"]` | Optionally specify an array of imagePullSecrets.  Secrets must be manually created in the namespace.  Ref: <https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/>  E.g: `pullSecrets: [myRegistryKeySecretName]` |
 | backstage.backstage.containerPorts | object | `{"backend":7007}` | Container ports on the Deployment |
 | backstage.backstage.command | list | `["node","packages/backend"]` | Backstage container command |
 | backstage.backstage.args | list | `["--config","app-config.yaml"]` | Backstage container command arguments |
@@ -95,16 +96,16 @@ helm install backstage chart/
 | backstage.backstage.extraEnvVarsSecrets | list | `[]` | Backstage container environment variables from existing Secrets |
 | backstage.backstage.initContainers | list | `[]` | Backstage container init containers |
 | backstage.backstage.installDir | string | `"/app"` | Directory containing the backstage installation |
-| backstage.backstage.resources | object | `{"limits":{"cpu":"4000m","memory":"8000Mi"},"requests":{"cpu":"2000m","memory":"4000Mi"}}` | Resource requests/limits  Ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#resource-requests-and-limits-of-pod-and-container <!-- E.g. resources:   limits:     memory: 1Gi     cpu: 1000m   requests:     memory: 250Mi     cpu: 100m --> |
-| backstage.backstage.readinessProbe | object | `{}` | Readiness Probe Backstage doesn't provide any health endpoints by default. A simple one can be added like this: https://backstage.io/docs/plugins/observability/#health-checks  Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes <!-- E.g. readinessProbe:   failureThreshold: 3   httpGet:     path: /healthcheck     port: 7007     scheme: HTTP   initialDelaySeconds: 30   periodSeconds: 10   successThreshold: 2   timeoutSeconds: 2 |
-| backstage.backstage.livenessProbe | object | `{}` | Liveness Probe Backstage doesn't provide any health endpoints by default. A simple one can be added like this: https://backstage.io/docs/plugins/observability/#health-checks  Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes <!-- E.g. livenessProbe:   failureThreshold: 3   httpGet:     path: /healthcheck     port: 7007     scheme: HTTP   initialDelaySeconds: 60   periodSeconds: 10   successThreshold: 1   timeoutSeconds: 2 |
-| backstage.backstage.startupProbe | object | `{}` | Startup Probe Backstage doesn't provide any health endpoints by default. A simple one can be added like this: https://backstage.io/docs/plugins/observability/#health-checks  Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes <!-- E.g. startupProbe:   failureThreshold: 3   httpGet:     path: /healthcheck     port: 7007     scheme: HTTP   initialDelaySeconds: 60   periodSeconds: 10   successThreshold: 1   timeoutSeconds: 2 |
-| backstage.backstage.podSecurityContext | object | `{"fsGroup":473,"runAsGroup":473,"runAsNonRoot":true,"runAsUser":473,"seccompProfile":{"type":"RuntimeDefault"}}` | Security settings for a Pod.  The security settings that you specify for a Pod apply to all Containers in the Pod.  Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod |
-| backstage.backstage.containerSecurityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]}}` | Security settings for a Container.  Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container |
+| backstage.backstage.resources | object | `{"limits":{"cpu":"4000m","memory":"8000Mi"},"requests":{"cpu":"2000m","memory":"4000Mi"}}` | Resource requests/limits  Ref: <https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#resource-requests-and-limits-of-pod-and-container> <!-- E.g. resources:   limits:     memory: 1Gi     cpu: 1000m   requests:     memory: 250Mi     cpu: 100m --> |
+| backstage.backstage.readinessProbe | object | `{}` | Readiness Probe Backstage doesn't provide any health endpoints by default. A simple one can be added like this: <https://backstage.io/docs/plugins/observability/#health-checks>  Ref: <https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes> <!-- E.g. readinessProbe:   failureThreshold: 3   httpGet:     path: /healthcheck     port: 7007     scheme: HTTP   initialDelaySeconds: 30   periodSeconds: 10   successThreshold: 2   timeoutSeconds: 2 |
+| backstage.backstage.livenessProbe | object | `{}` | Liveness Probe Backstage doesn't provide any health endpoints by default. A simple one can be added like this: <https://backstage.io/docs/plugins/observability/#health-checks>  Ref: <https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes> <!-- E.g. livenessProbe:   failureThreshold: 3   httpGet:     path: /healthcheck     port: 7007     scheme: HTTP   initialDelaySeconds: 60   periodSeconds: 10   successThreshold: 1   timeoutSeconds: 2 |
+| backstage.backstage.startupProbe | object | `{}` | Startup Probe Backstage doesn't provide any health endpoints by default. A simple one can be added like this: <https://backstage.io/docs/plugins/observability/#health-checks>  Ref: <https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes> <!-- E.g. startupProbe:   failureThreshold: 3   httpGet:     path: /healthcheck     port: 7007     scheme: HTTP   initialDelaySeconds: 60   periodSeconds: 10   successThreshold: 1   timeoutSeconds: 2 |
+| backstage.backstage.podSecurityContext | object | `{"fsGroup":473,"runAsGroup":473,"runAsNonRoot":true,"runAsUser":473,"seccompProfile":{"type":"RuntimeDefault"}}` | Security settings for a Pod.  The security settings that you specify for a Pod apply to all Containers in the Pod.  Ref: <https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod> |
+| backstage.backstage.containerSecurityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]}}` | Security settings for a Container.  Ref: <https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container> |
 | backstage.backstage.appConfig | object | `{"app":{"baseUrl":"http://localhost:7007"},"auth":{"environment":"development","providers":{"guest":{}}},"backend":{"baseUrl":"http://localhost:7007"},"catalog":{"locations":[{"target":"./catalog/*.yaml","type":"file"},{"target":"./template/*.yaml","type":"file"}],"rules":[{"allow":["Component","API","System","Location","Template","User","Group"]}]},"grafana":{"domain":"${GRAFANA_DOMAIN}","unifiedAlerting":false},"kubernetes":{"clusterLocatorMethods":[{"clusters":[{"authProvider":"serviceAccount","name":"bigbang-dev","skipMetricsLookup":true,"skipTLSVerify":false,"url":"http://127.0.0.1:9999"}],"type":"config"}],"customResources":[{"apiVersion":"v1","group":"networking.istio.io","plural":"virtualservices"},{"apiVersion":"v1","group":"networking.k8s.io","plural":"networkpolicies"},{"apiVersion":"v1","group":"security.istio.io","plural":"authorizationpolicies"},{"apiVersion":"v1","group":"security.istio.io","plural":"peerauthentications"},{"apiVersion":"v1","group":"source.toolkit.fluxcd.io","plural":"helmcharts"},{"apiVersion":"v2","group":"helm.toolkit.fluxcd.io","plural":"helmreleases"},{"apiVersion":"v1","group":"source.toolkit.fluxcd.io","plural":"gitrepositories"},{"apiVersion":"v1alpha2","group":"wgpolicyk8s.io","plural":"clusterpolicyreports"},{"apiVersion":"v1alpha2","group":"wgpolicyk8s.io","plural":"policyreports"},{"apiVersion":"v1","group":"kyverno.io","plural":"clusterpolicies"}],"frontend":{"podDelete":{"enabled":false}},"serviceLocatorMethod":{"type":"multiTenant"}},"organization":{"name":"My Company"},"proxy":{"/grafana/api":{"headers":{"Authorization":"Bearer ${GRAFANA_TOKEN}"},"target":"${GRAFANA_HTTP}://${GRAFANA_URL}"}}}` | Generates ConfigMap and configures it in the Backstage pods |
-| backstage.backstage.affinity | object | `{}` | Affinity for pod assignment  Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity |
-| backstage.backstage.nodeSelector | object | `{}` | Node labels for pod assignment  Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector |
-| backstage.backstage.tolerations | list | `[]` | Node tolerations for server scheduling to nodes with taints  Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/ |
+| backstage.backstage.affinity | object | `{}` | Affinity for pod assignment  Ref: <https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity> |
+| backstage.backstage.nodeSelector | object | `{}` | Node labels for pod assignment  Ref: <https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector> |
+| backstage.backstage.tolerations | list | `[]` | Node tolerations for server scheduling to nodes with taints  Ref: <https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/> |
 | backstage.backstage.podAnnotations | object | `{}` | Annotations to add to the backend deployment pods |
 | backstage.backstage.podLabels | object | `{}` | Labels to add to the backend deployment pods |
 | backstage.backstage.annotations | object | `{}` | Additional custom annotations for the `Deployment` resource |
@@ -114,11 +115,11 @@ helm install backstage chart/
 | service.ports.name | string | `"http-backend"` | Backstage svc port name |
 | service.ports.targetPort | string | `"backend"` | Backstage svc target port referencing receiving pod container port |
 | service.nodePorts | object | `{"backend":""}` | Node port for the Backstage client connections Choose port between `30000-32767` |
-| service.sessionAffinity | string | `"None"` | Control where client requests go, to the same pod or round-robin (values: `ClientIP` or `None`)  Ref: https://kubernetes.io/docs/concepts/services-networking/service/#session-stickiness |
+| service.sessionAffinity | string | `"None"` | Control where client requests go, to the same pod or round-robin (values: `ClientIP` or `None`)  Ref: <https://kubernetes.io/docs/concepts/services-networking/service/#session-stickiness> |
 | service.clusterIP | string | `""` | Backstage service Cluster IP   E.g `clusterIP: None` |
-| service.loadBalancerIP | string | `""` | Backstage service Load Balancer IP   Ref: https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer |
-| service.loadBalancerSourceRanges | list | `[]` | Load Balancer sources   Ref: https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer  E.g `loadBalancerSourceRanges: [10.10.10.0/24]` |
-| service.externalTrafficPolicy | string | `"Cluster"` | Backstage service external traffic policy  Ref: https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip |
+| service.loadBalancerIP | string | `""` | Backstage service Load Balancer IP   Ref: <https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer> |
+| service.loadBalancerSourceRanges | list | `[]` | Load Balancer sources   Ref: <https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer>  E.g `loadBalancerSourceRanges: [10.10.10.0/24]` |
+| service.externalTrafficPolicy | string | `"Cluster"` | Backstage service external traffic policy  Ref: <https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip> |
 | service.annotations | object | `{}` | Additional custom annotations for Backstage service |
 | service.extraPorts | list | `[]` | Extra ports to expose in the Backstage service (normally used with the `sidecar` value) |
 | networkPolicy.enabled | bool | `false` | Specifies whether a NetworkPolicy should be created |
@@ -175,4 +176,3 @@ Please see the [contributing guide](./CONTRIBUTING.md) if you are interested in 
 ---
 
 _This file is programatically generated using `helm-docs` and some BigBang-specific templates. The `gluon` repository has [instructions for regenerating package READMEs](https://repo1.dso.mil/big-bang/product/packages/gluon/-/blob/master/docs/bb-package-readme.md)._
-
