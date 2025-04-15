@@ -1,5 +1,5 @@
 
-### Configure dev instance of keycloak
+# Configure dev instance of keycloak
 
 This guide assumes that Keycloak is deployed with a realm other than "master" (e.g., "backstage") and that a client named "backstage" is created within this realm. The steps below detail how to configure the development version of Keycloak for use with Backstage.
 
@@ -29,7 +29,7 @@ This guide assumes that Keycloak is deployed with a realm other than "master" (e
 5. Create a Backstage user
     - on the users tab, create a new user named backstage with the following settings:
             - Username: backstage
-            - Email: backstage@example.com
+            - Email: <backstage@example.com>
             - First Name: backstage
             - Last Name: backstage
             - Email Verified: false

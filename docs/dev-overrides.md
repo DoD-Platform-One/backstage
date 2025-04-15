@@ -1,6 +1,6 @@
 # Backstage Development overrides
 
-### make sure to replace git branch and image tag with your development branch and tag values
+## make sure to replace git branch and image tag with your development branch and tag values
 
 ```yaml
 clusterAuditor:
@@ -27,6 +27,15 @@ eckOperator:
 fluentbit:
   enabled: false
 
+kyverno:
+  enabled: true
+
+kyvernoPolicies:
+  enabled: true
+
+grafana:
+  enabled: true
+
 monitoring:
   enabled: true
 
@@ -36,33 +45,25 @@ neuvector:
 twistlock:
   enabled: false
 
-packages:
+addons:
   backstage:
     enabled: true
-    wrapper:
-      enabled: true
-    dependsOn:
-      - name: grafana
-        namespace: bigbang
     git:
-      repo: "https://repo1.dso.mil/big-bang/product/packages/backstage"
       tag: null
       branch: "your-branch-here"
-      path: "./chart"
     values:
+      networkPolicies:
+        enabled: true
       grafana:
         # The following is the endpoint at which grafana API calls will be accessed through
         url: &grafanaUrl "monitoring-grafana.monitoring.svc.cluster.local"
         http: &grafanaHttp "http"
         # The following is the rewritten URL at which backstage grafana iframe will hyperlink to
         externalUrl: &grafanaExternalUrl "https://grafana.dev.bigbang.mil"
-      networkPolicies:
-        enabled: true
       backstage:
         serviceAccount:
           name: "backstage"
         backstage:
-          args: ["--config", "app-config.yaml", "--config", "app-config-from-configmap.yaml"]
           image:
             repository: "bigbang-staging/backstage"
             tag: "your-image-here"
@@ -220,8 +221,9 @@ packages:
             port: 7007
       enabled: true
       hardened:
+        enabled: true
         customServiceEntries:
-          - name: "backstage.backstage.svc.cluster.local"
+          - name: "backstage-backstage.backstage.svc.cluster.local"
             enabled: true
             spec:
               hosts:
