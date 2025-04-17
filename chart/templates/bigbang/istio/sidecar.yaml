@@ -16,7 +16,4 @@ spec:
     mode: {{ .Values.istio.hardened.outboundTrafficPolicyMode }}
   name: {{ .Release.Name }}-sidecar
   namespace: {{.Release.Namespace}}
-  labels:
-    name:
-      {{- include "bigbang.labels" $ | nindent 4}}
 {{- end }}

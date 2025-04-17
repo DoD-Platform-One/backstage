@@ -4,6 +4,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
+## [1.9.6-bb.11] - 2025-04-17
+
+### Changed
+
+- Fix for istio sidecar template for BB umbrella CI
+
 ## [1.9.6-bb.10] - 2025-04-11
 
 ### Added
