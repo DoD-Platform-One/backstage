@@ -4,6 +4,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
+## [2.5.1-bb.0] - 2025-04-18
+
+### Changed
+
+- configured renovate
+- update gluon 0.5.14 -> 0.5.15
+- update backstage chart 1.9.6 -> 2.5.1
+- remove postgresql deployment for chart
+- update istio resource apiVersion references to v1
+- add bigbang annotations
+- update registry to ironbank/big-bang/ namespace for compiled bigbang managed framework image
+- default guest access to enabled
+- remove keycloak refs for catalog backend
+
 ## [1.9.6-bb.11] - 2025-04-17
 
 ### Changed
@@ -48,13 +62,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 - backstage resource limits and requests settings for QoS in values.yaml
 - slightly smaller backstage resource limits and requests settings for QoS in test-values.yaml
-
-## [1.9.6-bb.5] - 2025-03-21
-
-### Added
-
-- dynamic component catalog definitions for bigbang components
-- unbound appconfig from static container to values definitions
 
 ## [1.9.6-bb.4] - 2025-03-13
 

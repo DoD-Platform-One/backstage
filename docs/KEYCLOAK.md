@@ -270,73 +270,11 @@ packages:
         serviceAccount:
           name: "backstage"
         backstage:
-          args: ["--config", "app-config.yaml", "--config", "app-config-from-configmap.yaml"]      
+          args: ["--config", "app-config.yaml"]
           image:
             registry: "registry1.dso.mil"
             repository: "bigbang-staging/backstage"
             tag: "your-test-image-tag"
-          #######################################################
-          ### Disable to following block if not utilizing grafana
-          ### in bigbang.  See The following link for details:
-          ### [Bigbang Grafana](./Grafana.md)
-          #######################################################
-          extraEnvVars:
-            - name: GRAFANA_HTTP
-              value: *grafanaHttp
-            - name: GRAFANA_URL
-              value: *grafanaUrl
-            - name: GRAFANA_DOMAIN
-              value: *grafanaExternalUrl
-          extraEnvVarsSecrets:
-            - grafana-api-token
-          initContainers:
-            - name: backstage-grafana-token
-              image: registry1.dso.mil/ironbank/big-bang/base:2.1.0
-              command: ["/bin/sh"]
-              args: ["-c", "export SVCACCT_ID=$(curl -X POST -H 'Content-Type: application/json' -d '{\"name\": \"backstage-viewer-{{ (randAlphaNum 5) }}\", \"role\": \"Viewer\"}' ${GRAFANA_HTTP}://${GRAFANA_ADMIN}:${GRAFANA_PASS}@${GRAFANA_URL}/api/serviceaccounts | jq -r '.id') && kubectl create secret -n backstage generic grafana-api-token --from-literal=GRAFANA_TOKEN=$(curl -X POST -H 'Content-Type: application/json' -d '{\"name\": \"backstage-grafana-{{ (randAlphaNum 5) }}\"}' ${GRAFANA_HTTP}://${GRAFANA_ADMIN}:${GRAFANA_PASS}@${GRAFANA_URL}/api/serviceaccounts/${SVCACCT_ID}/tokens | jq -r '.key') --dry-run=client -o yaml | kubectl apply -f -"]
-              env:
-                - name: GRAFANA_URL
-                  value: *grafanaUrl
-                - name: GRAFANA_HTTP
-                  value: *grafanaHttp
-                - name: GRAFANA_ADMIN
-                  valueFrom:
-                    secretKeyRef:
-                      name: monitoring-grafana
-                      key: admin-user
-                - name: GRAFANA_PASS
-                  valueFrom:
-                    secretKeyRef:
-                      name: monitoring-grafana
-                      key: admin-password
-              securityContext:
-                runAsNonRoot: true
-                runAsUser: 1001
-                runAsGroup: 1001
-                capabilities:
-                  drop:
-                    - ALL
-          #######################################################
-
-          resources:
-            requests:
-              cpu: 2
-              memory: 2Gi
-            limits:
-              cpu: 2
-              memory: 2Gi
-          podSecurityContext: 
-            runAsUser: 473
-            runAsGroup: 473
-            fsGroup: 473
-            runAsNonRoot: true
-            seccompProfile:
-              type: RuntimeDefault
-
-          containerSecurityContext: 
-            capabilities:
-                drop:
-                  - ALL
           appConfig:
             app:
             #################################################
@@ -347,13 +285,6 @@ packages:
               baseUrl: https://backstage.${DOMAIN}
               listen:
                 port: 7007
-              ##########################################################################################################
-              ### For use with catalog yaml URLs. See catalog.locations values for example config.
-              ### Info: https://backstage.io/docs/features/software-catalog/configuration/#static-location-configuration
-              ##########################################################################################################
-              reading:
-                allow:
-                  - host: 'repo1.dso.mil'
             auth:
             ### Providing an auth.session.secret will enable session support in the auth-backend. you can use "openssl rand -hex 64" to generate a random secret from cli or use the value provided below.
               session:
@@ -375,93 +306,6 @@ packages:
                     clientId: "${KEYCLOAK_CLIENT_ID}"
                     clientSecret: "${KEYCLOAK_CLIENT_SECRET}"
                     prompt: auto
-            proxy:
-              '/grafana/api':
-                # May be a public or an internal DNS
-                target: ${GRAFANA_HTTP}://${GRAFANA_URL}
-                headers:
-                  Authorization: Bearer ${GRAFANA_TOKEN}
-            grafana:
-              # Publicly accessible domain
-              domain: ${GRAFANA_DOMAIN}
-
-              # Is unified alerting enabled in Grafana?
-              # See: https://grafana.com/blog/2021/06/14/the-new-unified-alerting-system-for-grafana-everything-you-need-to-know/
-              # Optional. Default: false
-              unifiedAlerting: false
-
-            kubernetes:
-              customResources:
-                - group: 'networking.istio.io'
-                  apiVersion: 'v1'
-                  plural: 'virtualservices'
-                - group: 'networking.k8s.io'
-                  apiVersion: 'v1'
-                  plural: 'networkpolicies'
-                - group: 'security.istio.io'
-                  apiVersion: 'v1'
-                  plural: 'authorizationpolicies'
-                - group: 'security.istio.io'
-                  apiVersion: 'v1'
-                  plural: 'peerauthentications'
-                - group: 'source.toolkit.fluxcd.io'
-                  apiVersion: 'v1'
-                  plural: 'helmcharts'
-                - group: 'helm.toolkit.fluxcd.io'
-                  apiVersion: 'v2'
-                  plural: 'helmreleases'
-                - group: 'source.toolkit.fluxcd.io'
-                  apiVersion: 'v1'
-                  plural: 'gitrepositories'
-                - group: 'wgpolicyk8s.io'
-                  apiVersion: 'v1alpha2'
-                  plural: 'clusterpolicyreports'
-                - group: 'wgpolicyk8s.io'
-                  apiVersion: 'v1alpha2'
-                  plural: 'policyreports'
-                - group: 'kyverno.io'
-                  apiVersion: 'v1'
-                  plural: 'clusterpolicies'
-                serviceLocatorMethod:
-                type: 'multiTenant'
-              clusterLocatorMethods:
-                - type: 'config'
-                  clusters:
-                    ######################################################################################################
-                    ### k8s plugin utilizes k8s api, however the url field is required to be set to avoid
-                    ### a bug in the k8s plugin. See bottom of anchor link for details on how backstage omits url field:
-                    ### https://backstage.io/docs/features/kubernetes/configuration/#clustersserviceaccounttoken-optional 
-                    ######################################################################################################
-                    - url: http://127.0.0.1:9999
-                      name: bigbang-dev
-                      authProvider: 'serviceAccount'
-                      skipTLSVerify: false
-                      skipMetricsLookup: true 
-
-            catalog:
-              providers:
-                keycloakOrg:
-                  default:
-                    ########################################################################################
-                    ### replace the following variables with the necessary values from the created keycloak.
-                    ########################################################################################
-                    baseUrl: "${KEYCLOAK_BASE_URL}/auth"    
-                    loginRealm: "${KEYCLOAK_LOGIN_REALM}"
-                    realm: "${KEYCLOAK_REALM}"
-                    clientId: "${KEYCLOAK_CLIENT_ID}"
-                    clientSecret: "${KEYCLOAK_CLIENT_SECRET}"
-              rules:
-                - allow: [Component, API, System, Location, Template, User, Group]
-              locations:
-                - type: file
-                  target: ./catalog/*.yaml
-                - type: file
-                  target: ./template/*.yaml
-              ######################
-              ### Example url 'type'
-              ######################
-              #  - type: url
-              #    target: https://repo1.dso.mil/big-bang/apps/sandbox/backstage/-/raw/main/backstage/examples/org.yaml
     istio:
       hosts:
         - names:

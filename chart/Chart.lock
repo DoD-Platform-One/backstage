@@ -1,15 +1,12 @@
 dependencies:
 - name: backstage
   repository: oci://ghcr.io/backstage/charts
-  version: 1.9.6
+  version: 2.5.1
 - name: common
   repository: oci://registry-1.docker.io/bitnamicharts
   version: 2.10.0
-- name: postgresql
-  repository: oci://registry-1.docker.io/bitnamicharts
-  version: 12.10.0
 - name: gluon
   repository: oci://registry1.dso.mil/bigbang
-  version: 0.5.14
-digest: sha256:e14230146f2524d3e9748eb5255af780993739ea77febe1d43c34cd1cfc03441
-generated: "2025-04-02T14:30:43.832541-05:00"
+  version: 0.5.15
+digest: sha256:3863bf3bd12212d6e2eb853f5eb06ee8f36061cbab4b98822ef9713534a49a1c
+generated: "2025-04-18T13:30:21.820915-04:00"

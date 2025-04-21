@@ -150,15 +150,6 @@ appConfig:
           clientSecret: "${KEYCLOAK_CLIENT_SECRET}"
           #prompt can be set to 'auto' or 'login'
           prompt: auto
-  catalog:
-    providers:
-      keycloakOrg:
-        default:
-          baseUrl: "https://${KEYCLOAK_BASE_URL}/auth"
-          loginRealm: "${KEYCLOAK_REALM}"
-          realm: "${KEYCLOAK_REALM}"
-          clientId: "${KEYCLOAK_CLIENT_ID}"
-          clientSecret: "${KEYCLOAK_CLIENT_SECRET}"
 ```
 
 

@@ -91,6 +91,8 @@ ingress:
 # -- Backstage parameters
 # @default -- See below
 backstage:
+  serviceAccount:
+    name: "backstage"
   backstage:
 
     # -- Number of deployment replicas
@@ -106,10 +108,10 @@ backstage:
       registry: "registry1.dso.mil"
 
       # -- Backstage image repository
-      repository: "bigbang-staging/backstage"
+      repository: "ironbank/big-bang/backstage"
 
       # -- Backstage image tag (immutable tags are recommended)
-      tag: "initial-start"
+      tag: "1.0.4"
 
       # -- Backstage image digest (digest takes precedence over image tag)
       #digest: ""
@@ -151,7 +153,7 @@ backstage:
     # -- Backstage container additional volumes
     #extraVolumes: []
 
-## Dynamic catalog configuration: the following allows catalogs to be built for bigbang based on enabled bigbang addons and packages.
+    ## Dynamic catalog configuration: the following allows catalogs to be built for bigbang based on enabled bigbang addons and packages.
     extraVolumeMounts:
       - name: catalog-bigbang
         mountPath: "/app/catalog/"
@@ -291,9 +293,9 @@ backstage:
         environment: development
         providers:
           # Note: enabling "dangerouslyAllowOutsideDevelopment" gives all UI access to all users
-          # with no restrictions.  Use for development / testing only!
-          guest: {}
-            #dangerouslyAllowOutsideDevelopment: true
+          # with no restrictions.  Recommended to configure SSO for backstage.
+          guest: 
+            dangerouslyAllowOutsideDevelopment: true
       proxy:
         # These values are enabled by using the grafana section near the bottom under BigBang configuration.
         # They exist as example strings if grafana is not enabled to allow backstage to start. 
@@ -369,41 +371,6 @@ backstage:
         # example URL type:
         #  - type: url
         #    target: https://repo1.dso.mil/big-bang/product/packages/backstage/-/raw/main/backstage/examples/org.yaml
-##################################################################################################################################
-# keycloak integration                                                                                                           #
-# https://github.com/backstage/community-plugins/blob/main/workspaces/keycloak/plugins/catalog-backend-module-keycloak/README.md #
-##################################################################################################################################
-#       app:
-#         # please replace variables below with real value
-#         baseUrl: https://backstage.${DOMAIN}
-#       backend:
-#         baseUrl: https://backstage.${DOMAIN}
-#         listen:
-#           port: 7007
-#       auth:
-#       ### Providing an auth.session.secret will enable session support in the auth-backend. you can use *"openssl rand -hex 64"* to generate a random secret from cli or use the value provided below.
-#         session:
-#           secret: "XxNl2b+/hGH7w7RJk8c5LXNOBh6+kzysxgYXlMK5Pgo="
-#       # see https://backstage.io/docs/auth/ to learn about auth providers
-#         environment: development
-#         providers:
-#           keycloak:
-#             development:
-#             # please replace variables below with real value
-#               metadataUrl: "https://${KEYCLOAK_BASE_URL}/auth/realms/backstage/.well-known/openid-configuration"
-#               clientId: "${KEYCLOAK_CLIENT_ID}"
-#               clientSecret: "${KEYCLOAK_CLIENT_SECRET}"
-#               prompt: auto
-#  ##  Catalog is an optional config for loading users and group from keycloak.
-#       catalog:
-#         providers:
-#           keycloakOrg:
-#             default:
-#               baseUrl: '${KEYCLOAK_BASE_URL}/auth'
-#               loginRealm: '${KEYCLOAK_LOGIN_REALM}'
-#               realm: '${KEYCLOAK_REALM}'
-#               clientId: '${KEYCLOAK_CLIENT_ID}'
-#               clientSecret: '${KEYCLOAK_CLIENT_SECRET}'
 
     # -- Affinity for pod assignment
     #  Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
@@ -530,7 +497,7 @@ networkPolicy:
 # @default -- See below
 postgresql:
 
-  # -- Switch to enable or disable the PostgreSQL helm chart
+  # -- Switch to enable or disable the PostgreSQL integration
   enabled: false
 
   # -- The authentication details of the Postgres database
@@ -608,45 +575,6 @@ metrics:
 
 # Bigbang addons.  These are upstream values from bigbang chart so typically not required to modify these.
 ## Helm does not carry values undeclared to child charts. Used for development purposes.
-
-
-## The below configuration enables grafana from a new deployment.
-## See https://repo1.dso.mil/big-bang/apps/sandbox/backstage/-/blob/main/docs/Grafana.md for deploying without grafana, or utilizing an existing deployment.
-############################################################################################
-#backstage:
-#  backstage:
-#
-#    extraEnvVarsSecrets:
-#      - grafana-api-token
-#
-#    initContainers:
-#      - name: backstage-grafana-token
-#        image: registry1.dso.mil/ironbank/big-bang/base:2.1.0
-#        command: ["/bin/sh"]
-#        args: ["-c", "export SVCACCT_ID=$(curl -X POST -H 'Content-Type: application/json' -d '{\"name\": \"backstage-viewer-{{ (randAlphaNum 5) }}\", \"role\": \"Viewer\"}' ${GRAFANA_HTTP}://${GRAFANA_ADMIN}:${GRAFANA_PASS}@${GRAFANA_URL}/api/serviceaccounts | jq -r '.id') && kubectl create secret -n backstage generic grafana-api-token --from-literal=GRAFANA_TOKEN=$(curl -X POST -H 'Content-Type: application/json' -d '{\"name\": \"backstage-grafana-{{ (randAlphaNum 5) }}\"}' ${GRAFANA_HTTP}://${GRAFANA_ADMIN}:${GRAFANA_PASS}@${GRAFANA_URL}/api/serviceaccounts/${SVCACCT_ID}/tokens | jq -r '.key') --dry-run=client -o yaml | kubectl apply -f -"]
-#        env:
-#          - name: GRAFANA_URL
-#            value: *grafanaUrl
-#          - name: GRAFANA_HTTP
-#            value: *grafanaHttp
-#          - name: GRAFANA_ADMIN
-#            valueFrom:
-#              secretKeyRef:
-#                name: monitoring-grafana
-#                key: admin-user
-#          - name: GRAFANA_PASS
-#            valueFrom:
-#              secretKeyRef:
-#                name: monitoring-grafana
-#                key: admin-password
-#        securityContext:
-#          runAsNonRoot: true
-#          runAsUser: 1001
-#          runAsGroup: 1001
-#          capabilities:
-#            drop:
-#              - ALL
-############################################################################################
 
 # -- Base domain to use.
 domain: dev.bigbang.mil
