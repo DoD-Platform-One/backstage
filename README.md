@@ -1,7 +1,7 @@
 <!-- Warning: Do not manually edit this file. See notes on gluon + helm-docs at the end of this file for more information. -->
 # backstage
 
-![Version: 1.9.6-bb.11](https://img.shields.io/badge/Version-1.9.6--bb.11-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v1.31.1](https://img.shields.io/badge/AppVersion-v1.31.1-informational?style=flat-square) ![Maintenance Track: unknown](https://img.shields.io/badge/Maintenance_Track-unknown-red?style=flat-square)
+![Version: 2.5.1-bb.0](https://img.shields.io/badge/Version-2.5.1--bb.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.4](https://img.shields.io/badge/AppVersion-1.0.4-informational?style=flat-square) ![Maintenance Track: unknown](https://img.shields.io/badge/Maintenance_Track-unknown-red?style=flat-square)
 
 A Helm chart for deploying a Backstage application
 
@@ -13,14 +13,7 @@ A Helm chart for deploying a Backstage application
 
 ## Upstream Release Notes
 
-This package has no upstream release note links on file. Please add some to [chart/Chart.yaml](chart/Chart.yaml) under `annotations.bigbang.dev/upstreamReleaseNotesMarkdown`.
-Example:
-```yaml
-annotations:
-  bigbang.dev/upstreamReleaseNotesMarkdown: |
-    - [Find our upstream chart's CHANGELOG here](https://link-goes-here/CHANGELOG.md)
-    - [and our upstream application release notes here](https://another-link-here/RELEASE_NOTES.md)
-```
+The [upstream chart's release notes](https://github.com/backstage/charts/releases) may help when reviewing this package.
 
 ## Learn More
 
@@ -82,8 +75,8 @@ helm install backstage chart/
 | backstage.backstage.replicas | int | `1` | Number of deployment replicas |
 | backstage.backstage.revisionHistoryLimit | int | `10` | Define the [count of deployment revisions](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#clean-up-policy) to be kept. May be set to 0 in case of GitOps deployment approach. |
 | backstage.backstage.image.registry | string | `"registry1.dso.mil"` | Backstage image registry |
-| backstage.backstage.image.repository | string | `"bigbang-staging/backstage"` | Backstage image repository |
-| backstage.backstage.image.tag | string | `"initial-start"` | Backstage image tag (immutable tags are recommended) |
+| backstage.backstage.image.repository | string | `"ironbank/big-bang/backstage"` | Backstage image repository |
+| backstage.backstage.image.tag | string | `"1.0.4"` | Backstage image tag (immutable tags are recommended) |
 | backstage.backstage.image.pullPolicy | string | `"Always"` | Specify a imagePullPolicy. Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'  Ref: https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy |
 | backstage.backstage.image.pullSecrets | list | `["private-registry"]` | Optionally specify an array of imagePullSecrets.  Secrets must be manually created in the namespace.  Ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/  E.g: `pullSecrets: [myRegistryKeySecretName]` |
 | backstage.backstage.containerPorts | object | `{"backend":7007}` | Container ports on the Deployment |
@@ -92,6 +85,7 @@ helm install backstage chart/
 | backstage.backstage.extraAppConfig | list | `[]` | Extra app configuration files to inline into command arguments |
 | backstage.backstage.extraContainers | list | `[]` | Deployment sidecars |
 | backstage.backstage.extraEnvVarsCM | list | `[]` | Backstage container environment variables from existing ConfigMaps |
+| backstage.backstage.extraVolumeMounts | list | `[{"mountPath":"/app/catalog/","name":"catalog-bigbang"}]` | Backstage container additional volumes extraVolumes: [] # Dynamic catalog configuration: the following allows catalogs to be built for bigbang based on enabled bigbang addons and packages. |
 | backstage.backstage.extraEnvVarsSecrets | list | `[]` | Backstage container environment variables from existing Secrets |
 | backstage.backstage.initContainers | list | `[]` | Backstage container init containers |
 | backstage.backstage.installDir | string | `"/app"` | Directory containing the backstage installation |
@@ -101,7 +95,7 @@ helm install backstage chart/
 | backstage.backstage.startupProbe | object | `{}` | Startup Probe Backstage doesn't provide any health endpoints by default. A simple one can be added like this: https://backstage.io/docs/plugins/observability/#health-checks  Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes <!-- E.g. startupProbe:   failureThreshold: 3   httpGet:     path: /healthcheck     port: 7007     scheme: HTTP   initialDelaySeconds: 60   periodSeconds: 10   successThreshold: 1   timeoutSeconds: 2 |
 | backstage.backstage.podSecurityContext | object | `{"fsGroup":473,"runAsGroup":473,"runAsNonRoot":true,"runAsUser":473,"seccompProfile":{"type":"RuntimeDefault"}}` | Security settings for a Pod.  The security settings that you specify for a Pod apply to all Containers in the Pod.  Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod |
 | backstage.backstage.containerSecurityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]}}` | Security settings for a Container.  Ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container |
-| backstage.backstage.appConfig | object | `{"app":{"baseUrl":"http://localhost:7007"},"auth":{"environment":"development","providers":{"guest":{}}},"backend":{"baseUrl":"http://localhost:7007"},"catalog":{"locations":[{"target":"./catalog/*.yaml","type":"file"},{"target":"./template/*.yaml","type":"file"}],"rules":[{"allow":["Component","API","System","Location","Template","User","Group"]}]},"grafana":{"domain":"${GRAFANA_DOMAIN}","unifiedAlerting":false},"kubernetes":{"clusterLocatorMethods":[{"clusters":[{"authProvider":"serviceAccount","name":"bigbang-dev","skipMetricsLookup":true,"skipTLSVerify":false,"url":"http://127.0.0.1:9999"}],"type":"config"}],"customResources":[{"apiVersion":"v1","group":"networking.istio.io","plural":"virtualservices"},{"apiVersion":"v1","group":"networking.k8s.io","plural":"networkpolicies"},{"apiVersion":"v1","group":"security.istio.io","plural":"authorizationpolicies"},{"apiVersion":"v1","group":"security.istio.io","plural":"peerauthentications"},{"apiVersion":"v1","group":"source.toolkit.fluxcd.io","plural":"helmcharts"},{"apiVersion":"v2","group":"helm.toolkit.fluxcd.io","plural":"helmreleases"},{"apiVersion":"v1","group":"source.toolkit.fluxcd.io","plural":"gitrepositories"},{"apiVersion":"v1alpha2","group":"wgpolicyk8s.io","plural":"clusterpolicyreports"},{"apiVersion":"v1alpha2","group":"wgpolicyk8s.io","plural":"policyreports"},{"apiVersion":"v1","group":"kyverno.io","plural":"clusterpolicies"}],"frontend":{"podDelete":{"enabled":false}},"serviceLocatorMethod":{"type":"multiTenant"}},"organization":{"name":"My Company"},"proxy":{"/grafana/api":{"headers":{"Authorization":"Bearer ${GRAFANA_TOKEN}"},"target":"${GRAFANA_HTTP}://${GRAFANA_URL}"}}}` | Generates ConfigMap and configures it in the Backstage pods |
+| backstage.backstage.appConfig | object | `{"app":{"baseUrl":"http://localhost:7007"},"auth":{"environment":"development","providers":{"guest":{"dangerouslyAllowOutsideDevelopment":true}}},"backend":{"baseUrl":"http://localhost:7007"},"catalog":{"locations":[{"target":"./catalog/*.yaml","type":"file"},{"target":"./template/*.yaml","type":"file"}],"rules":[{"allow":["Component","API","System","Location","Template","User","Group"]}]},"grafana":{"domain":"${GRAFANA_DOMAIN}","unifiedAlerting":false},"kubernetes":{"clusterLocatorMethods":[{"clusters":[{"authProvider":"serviceAccount","name":"bigbang-dev","skipMetricsLookup":true,"skipTLSVerify":false,"url":"http://127.0.0.1:9999"}],"type":"config"}],"customResources":[{"apiVersion":"v1","group":"networking.istio.io","plural":"virtualservices"},{"apiVersion":"v1","group":"networking.k8s.io","plural":"networkpolicies"},{"apiVersion":"v1","group":"security.istio.io","plural":"authorizationpolicies"},{"apiVersion":"v1","group":"security.istio.io","plural":"peerauthentications"},{"apiVersion":"v1","group":"source.toolkit.fluxcd.io","plural":"helmcharts"},{"apiVersion":"v2","group":"helm.toolkit.fluxcd.io","plural":"helmreleases"},{"apiVersion":"v1","group":"source.toolkit.fluxcd.io","plural":"gitrepositories"},{"apiVersion":"v1alpha2","group":"wgpolicyk8s.io","plural":"clusterpolicyreports"},{"apiVersion":"v1alpha2","group":"wgpolicyk8s.io","plural":"policyreports"},{"apiVersion":"v1","group":"kyverno.io","plural":"clusterpolicies"}],"frontend":{"podDelete":{"enabled":false}},"serviceLocatorMethod":{"type":"multiTenant"}},"organization":{"name":"My Company"},"proxy":{"/grafana/api":{"headers":{"Authorization":"Bearer ${GRAFANA_TOKEN}"},"target":"${GRAFANA_HTTP}://${GRAFANA_URL}"}}}` | Generates ConfigMap and configures it in the Backstage pods |
 | backstage.backstage.affinity | object | `{}` | Affinity for pod assignment  Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity |
 | backstage.backstage.nodeSelector | object | `{}` | Node labels for pod assignment  Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector |
 | backstage.backstage.tolerations | list | `[]` | Node tolerations for server scheduling to nodes with taints  Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/ |
@@ -128,7 +122,7 @@ helm install backstage chart/
 | networkPolicy.egressRules.denyConnectionsToExternal | bool | `false` | Deny external connections. Should not be enabled when working with an external database. |
 | networkPolicy.egressRules.customRules | list | `[]` | Additional custom egress rules |
 | postgresql | object | See below | PostgreSQL [chart configuration](https://github.com/bitnami/charts/blob/master/bitnami/postgresql/values.yaml) |
-| postgresql.enabled | bool | `false` | Switch to enable or disable the PostgreSQL helm chart |
+| postgresql.enabled | bool | `false` | Switch to enable or disable the PostgreSQL integration |
 | postgresql.auth | object | `{"existingSecret":"","password":"","secretKeys":{"adminPasswordKey":"admin-password","replicationPasswordKey":"replication-password","userPasswordKey":"user-password"},"username":"bn_backstage"}` | The authentication details of the Postgres database |
 | postgresql.auth.username | string | `"bn_backstage"` | Name for a custom user to create |
 | postgresql.auth.password | string | `""` | Password for the custom user to create |

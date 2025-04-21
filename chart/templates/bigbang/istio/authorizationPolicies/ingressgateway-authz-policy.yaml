@@ -7,7 +7,7 @@
 {{- $namespace = $gatewayParts._0 -}}
 {{- $name = $gatewayParts._1 -}}
 {{- end -}}
-apiVersion: security.istio.io/v1beta1
+apiVersion: security.istio.io/v1
 kind: AuthorizationPolicy
 metadata:
   name: {{ include "common.names.fullname" $ }}-ingressgateway-authz-policy
