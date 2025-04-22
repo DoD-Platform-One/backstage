@@ -46,9 +46,9 @@
         {
             "fileMatch": ["^chart/Chart\\.yaml$"],
             "matchStrings": [
-                "image:[^\\S\\r\\n]+(?<depName>.+):(?<currentValue>.+)"
+                "- name:[\\s]+base[\\s]+image:[^\\S\\r\\n]+(?<depName>.+):(?<currentValue>.+)"
             ],
-            "depNameTemplate": "registry1.dso.mil/ironbank/bitnami/redis",
+            "depNameTemplate": "registry1.dso.mil/ironbank/big-bang/base",
             "datasourceTemplate": "docker"
         },
         {
