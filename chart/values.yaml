@@ -111,7 +111,7 @@ backstage:
       repository: "ironbank/big-bang/backstage"
 
       # -- Backstage image tag (immutable tags are recommended)
-      tag: "1.0.4"
+      tag: "1.0.5"
 
       # -- Backstage image digest (digest takes precedence over image tag)
       #digest: ""

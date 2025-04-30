@@ -4,6 +4,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
+## [2.5.1-bb.2] - 2025-04-25
+
+### Changed
+
+- update image from ironbank/big-bang/backstage 1.0.4 -> 1.0.5
+
 ## [2.5.1-bb.1] - 2025-04-21
 
 ### Added
