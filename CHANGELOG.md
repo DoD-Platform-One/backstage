@@ -4,6 +4,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
+## [2.5.2-bb.0] - 2025-05-14
+
+### Changed
+
+- update gluon 0.5.15 -> 0.5.19
+- update backstage chart 2.5.1 -> 2.5.2
+
 ## [2.5.1-bb.2] - 2025-04-25
 
 ### Changed
