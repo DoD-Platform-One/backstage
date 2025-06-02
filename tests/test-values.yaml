@@ -1,35 +1,40 @@
-backstage:
+#########################
+# Disable Core Packages #
+#########################
+# monitoring:
+#   enabled: false
+grafana:
+  enabled: false
+neuvector:
+  enabled: false
+loki:
+  enabled: false
+promtail:
+  enabled: false
+tempo:
+  enabled: false
+kyvernoReporter:
+  enabled: false
+kiali:
+  enabled: false
+addons:
+  minioOperator:
+    enabled: false
+########################
+# Required for package #
+########################
   backstage:
-    appConfig:
-      organization:
-        name: "P1"
-      app:
-        baseUrl: "http://localhost:7007"
-      backend:
-        baseUrl: "http://localhost:7007"
-        listen:
-          port: 7007
-      auth:
-        environment: development
-        providers:
-          guest:
-            # because we use NODE_ENV: production, we must set this to allow guest development login
-            dangerouslyAllowOutsideDevelopment: true
-      proxy:
-        '/grafana/api':
-          # May be a public or an internal DNS
-          target: "https://example.com"
-          headers:
-            Authorization: "Bearer abc-123"
-
-      grafana:
-        # Publicly accessible domain
-        domain: "https://example.com"
-
-        # Is unified alerting enabled in Grafana?
-        # See: https://grafana.com/blog/2021/06/14/the-new-unified-alerting-system-for-grafana-everything-you-need-to-know/
-        # Optional. Default: false
-        unifiedAlerting: false
-
-bbtests:
+    enabled: true
+monitoring:
   enabled: true
+  values:
+    bbtests:
+      enabled: false
+kyvernoPolicies:
+  values:
+    bbtests:
+      enabled: false
+kyverno:
+  values:
+    bbtests:
+      enabled: false
