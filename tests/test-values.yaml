@@ -17,6 +17,8 @@ kyvernoReporter:
   enabled: false
 kiali:
   enabled: false
+bbctl:
+  enabled: false
 addons:
   minioOperator:
     enabled: false
