@@ -1,7 +1,7 @@
 <!-- Warning: Do not manually edit this file. See notes on gluon + helm-docs at the end of this file for more information. -->
 # backstage
 
-![Version: 2.5.2-bb.4](https://img.shields.io/badge/Version-2.5.2--bb.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.8](https://img.shields.io/badge/AppVersion-1.0.8-informational?style=flat-square) ![Maintenance Track: unknown](https://img.shields.io/badge/Maintenance_Track-unknown-red?style=flat-square)
+![Version: 2.5.3-bb.0](https://img.shields.io/badge/Version-2.5.3--bb.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.10](https://img.shields.io/badge/AppVersion-1.0.10-informational?style=flat-square) ![Maintenance Track: unknown](https://img.shields.io/badge/Maintenance_Track-unknown-red?style=flat-square)
 
 A Helm chart for deploying a Backstage application
 
@@ -76,7 +76,7 @@ helm install backstage chart/
 | backstage.backstage.revisionHistoryLimit | int | `10` | Define the [count of deployment revisions](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#clean-up-policy) to be kept. May be set to 0 in case of GitOps deployment approach. |
 | backstage.backstage.image.registry | string | `"registry1.dso.mil"` | Backstage image registry |
 | backstage.backstage.image.repository | string | `"ironbank/big-bang/backstage"` | Backstage image repository |
-| backstage.backstage.image.tag | string | `"1.0.8"` | Backstage image tag (immutable tags are recommended) |
+| backstage.backstage.image.tag | string | `"1.0.10"` | Backstage image tag (immutable tags are recommended) |
 | backstage.backstage.image.pullPolicy | string | `"Always"` | Specify a imagePullPolicy. Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'  Ref: https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy |
 | backstage.backstage.image.pullSecrets | list | `["private-registry"]` | Optionally specify an array of imagePullSecrets.  Secrets must be manually created in the namespace.  Ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/  E.g: `pullSecrets: [myRegistryKeySecretName]` |
 | backstage.backstage.containerPorts | object | `{"backend":7007}` | Container ports on the Deployment |
