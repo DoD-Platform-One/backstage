@@ -9,8 +9,6 @@ neuvector:
   enabled: false
 loki:
   enabled: false
-promtail:
-  enabled: false
 tempo:
   enabled: false
 kyvernoReporter:
@@ -22,9 +20,9 @@ bbctl:
 addons:
   minioOperator:
     enabled: false
-########################
-# Required for package #
-########################
+    ########################
+    # Required for package #
+    ########################
   backstage:
     enabled: true
 monitoring:
