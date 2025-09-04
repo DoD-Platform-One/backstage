@@ -3,6 +3,13 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
+## [2.5.3-bb.2] - 2025-09-03
+
+### Changed
+
+- Updated backstage chart 2.6.0 -> 2.6.1
+- Updated common 2.31.3 -> 2.31.4
+- Updated gluon 0.7.0 -> 0.8.4
 
 ## [2.5.3-bb.1] - 2025-07-21
 
@@ -11,7 +18,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Updated backstage 1.0.8 -> 1.0.10
 - Updated common 2.10.0 -> 2.31.3
 - Updated gluon 0.6.3 -> 0.7.0
-- 
+
 ## [2.5.3-bb.0] - 2025-07-02
 
 ### Changed
