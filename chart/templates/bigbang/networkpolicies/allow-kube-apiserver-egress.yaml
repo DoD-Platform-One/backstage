@@ -18,6 +18,10 @@ spec:
     - ipBlock:
         cidr: {{ .ip }}/32
     {{- end }}
+    {{- if ne $.Values.networkPolicies.vpcCidr "0.0.0.0/0" }}
+    - ipBlock:
+        cidr: {{ $.Values.networkPolicies.vpcCidr }}
+    {{- end }}
     ports:
       {{- range .ports }}
       - protocol: {{ .protocol }}
