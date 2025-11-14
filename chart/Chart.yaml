@@ -1,16 +1,16 @@
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 2.5.3-bb.3
-appVersion: 1.0.10
+version: 2.6.3-bb.0
+appVersion: 1.1.0
 annotations:
   bigbang.dev/applicationVersions: |
-    - backstage: 1.0.10
+    - backstage: 1.1.0
   bigbang.dev/upstreamReleaseNotesMarkdown: |
     The [upstream chart's release notes](https://github.com/backstage/charts/releases) may help when reviewing this package.
   helm.sh/images: |
     - name: backstage
-      image: registry1.dso.mil/ironbank/big-bang/backstage:1.0.10
+      image: registry1.dso.mil/ironbank/big-bang/backstage:1.1.0
     - name: base
       image: registry1.dso.mil/ironbank/big-bang/base:2.1.0
   artifacthub.io/category: integration-delivery
@@ -28,15 +28,15 @@ dependencies:
   - name: backstage
     repository: oci://ghcr.io/backstage/charts
     tags:
-      - 2.6.1
-    version: 2.6.1
+      - 2.6.3
+    version: 2.6.3
   - name: common
     repository: oci://registry-1.docker.io/bitnamicharts
     tags:
       - bitnami-common
     version: 2.31.4
   - name: gluon
-    version: "0.8.4"
+    version: "0.9.6"
     repository: "oci://registry1.dso.mil/bigbang"
 home: https://backstage.io
 icon: https://raw.githubusercontent.com/cncf/artwork/master/projects/backstage/icon/color/backstage-icon-color.svg

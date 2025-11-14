@@ -20,7 +20,7 @@ This guide assumes that Keycloak is deployed with a realm other than "master" (e
       - Web Origins: Add the following URLs:
           - <https://backstage.${DOMAIN}/*>
       - ServiceAccount tab: Add the following roles. //this is only required if catalog is enabled.
-            -  query-group
+            -  query-groups
             -  query-users
             -  view-users
       - Take note of Key Credentials
