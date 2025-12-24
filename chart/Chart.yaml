@@ -1,7 +1,7 @@
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 2.6.3-bb.0
+version: 2.6.3-bb.1
 appVersion: 1.1.0
 annotations:
   bigbang.dev/applicationVersions: |
@@ -36,7 +36,7 @@ dependencies:
       - bitnami-common
     version: 2.31.4
   - name: gluon
-    version: "0.9.6"
+    version: "0.9.7"
     repository: "oci://registry1.dso.mil/bigbang"
 home: https://backstage.io
 icon: https://raw.githubusercontent.com/cncf/artwork/master/projects/backstage/icon/color/backstage-icon-color.svg
