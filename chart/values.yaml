@@ -2,6 +2,9 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+monitoring:
+  enabled: true
+
 # -- Global parameters
 # Global Docker image parameters
 # Please, note that this will override the image parameters, including dependencies, configured to use the global value
@@ -580,62 +583,54 @@ metrics:
 domain: dev.bigbang.mil
 
 networkPolicies:
-  # -- Toggle networkPolicies
-  enabled: false
-  # -- Control Plane CIDR, defaults to 0.0.0.0/0, use `kubectl get endpoints -n default kubernetes` to get the CIDR range needed for your cluster
-  # Must be an IP CIDR range (x.x.x.x/x - ideally with /32 for the specific IP of a single endpoint, broader range for multiple masters/endpoints)
-  # Used by package NetworkPolicies to allow Kube API access
-  controlPlaneCidr: 0.0.0.0/0
-  vpcCidr: 0.0.0.0/0
+  enabled: true
+
+  # -- Egress policies
+  egress:
+    from:
+      backstage:
+        to:
+          # Kube API access for kubernetes plugin
+          definition:
+            kubeAPI: true
+          k8s:
+            monitoring/grafana:3000: false
+            monitoring/prometheus:9090: false
+            logging/loki:3100: false
+            tempo/tempo:4317: false
+            keycloak/keycloak:8443: false
+
+  # -- Additional raw NetworkPolicy resources
   additionalPolicies: []
 
-  # -- NetworkPolicy selectors and ports for
-  # egress to downstream telemetry ingestion services.
-  # These should be uncommented and overridden if any
-  # of these values deviate from the Big Bang defaults.
-  egress: {}
-    #
-    # prometheus:
-    #   ports:
-    #     - 9090
-    #   namespaceSelector:
-    #     matchLabels:
-    #       app.kubernetes.io/name: monitoring
-    #   podSelector:
-    #     matchLabels:
-    #       app.kubernetes.io/name: prometheus
-    # loki:
-    #   ports:
-    #     - 3100
-    #   namespaceSelector:
-    #     matchLabels:
-    #       app.kubernetes.io/name: logging
-    #   podSelector:
-    #     matchLabels:
-    #       app.kubernetes.io/name: loki-logging
-    # tempo:
-    #   ports:
-    #     - 4317
-    #   namespaceSelector:
-    #     matchLabels:
-    #       app.kubernetes.io/name: tempo
-    #   podSelector:
-    #     matchLabels:
-    #       app.kubernetes.io/name: tempo
-  ingressLabels:
-    app: istio-ingressgateway
-    istio: ingressgateway
+# -- Routes configuration (VirtualService via bb-common)
+routes:
+  inbound:
+    backstage:
+      enabled: true
+      gateways:
+        - istio-gateway/public-ingressgateway
+      hosts:
+        - backstage.{{ .Values.domain }}
+      service: '{{ include "common.names.fullname" . }}'
+      port: 7007
 
 # -- Istio configuration
 istio:
   enabled: false
-  hardened:
+  # -- mTLS PeerAuthentication mode
+  mtls:
+    # STRICT = Allow only mutual TLS traffic
+    # PERMISSIVE = Allow both plain text and mutual TLS traffic
+    mode: STRICT
+  # -- Sidecar configuration for hardened mode
+  sidecar:
     enabled: false
-    customAuthorizationPolicies: []
-    outboundTrafficPolicyMode: "REGISTRY_ONLY"
-    customServiceEntries: []
+    outboundTrafficPolicyMode: REGISTRY_ONLY
+  # -- Custom ServiceEntry resources
+  serviceEntries:
+    custom: []
       # - name: "allow-google"
-      #   enabled: true
       #   spec:
       #     hosts:
       #       - google.com
@@ -645,18 +640,10 @@ istio:
       #         protocol: TLS
       #         name: https
       #     resolution: DNS
-
-  backstage:
-    gateways:
-      - "istio-system/public"
-    hosts:
-      - backstage.{{ .Values.domain }}
-  # Default backstage peer authentication
-  mtls:
-    # STRICT = Allow only mutual TLS traffic
-    # PERMISSIVE = Allow both plain text and mutual TLS traffic
-    mode: STRICT
-  namespace: "istio-system"
+  # -- AuthorizationPolicy configuration
+  authorizationPolicies:
+    enabled: false
+    custom: []
 
 # Big Bang Continuous Integration Testing Only
 bbtests:

@@ -1,7 +1,7 @@
 <!-- Warning: Do not manually edit this file. See notes on gluon + helm-docs at the end of this file for more information. -->
 # backstage
 
-![Version: 2.6.3-bb.1](https://img.shields.io/badge/Version-2.6.3--bb.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.0](https://img.shields.io/badge/AppVersion-1.1.0-informational?style=flat-square) ![Maintenance Track: unknown](https://img.shields.io/badge/Maintenance_Track-unknown-red?style=flat-square)
+![Version: 2.6.3-bb.2](https://img.shields.io/badge/Version-2.6.3--bb.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.1.0](https://img.shields.io/badge/AppVersion-1.1.0-informational?style=flat-square) ![Maintenance Track: unknown](https://img.shields.io/badge/Maintenance_Track-unknown-red?style=flat-square)
 
 A Helm chart for deploying a Backstage application
 
@@ -45,6 +45,7 @@ helm install backstage chart/
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| monitoring.enabled | bool | `true` |  |
 | global | object | See below | Global parameters Global Docker image parameters Please, note that this will override the image parameters, including dependencies, configured to use the global value Current available global Docker image parameters: imageRegistry, imagePullSecrets and storageClass |
 | global.imageRegistry | string | `""` | Global Docker image registry |
 | global.imagePullSecrets | list | `[]` | Global Docker registry secret names as an array  E.g. `imagePullSecrets: [myRegistryKeySecretName]` |
@@ -146,14 +147,20 @@ helm install backstage chart/
 | metrics.serviceMonitor.interval | string | `nil` | ServiceMonitor scrape interval |
 | metrics.serviceMonitor.path | string | `"/metrics"` | ServiceMonitor endpoint path  Note that the /metrics endpoint is NOT present in a freshly scaffolded Backstage app. To setup, follow the [Prometheus metrics tutorial](https://github.com/backstage/backstage/blob/master/contrib/docs/tutorials/prometheus-metrics.md). |
 | domain | string | `"dev.bigbang.mil"` | Base domain to use. |
-| networkPolicies.enabled | bool | `false` | Toggle networkPolicies |
-| networkPolicies.controlPlaneCidr | string | `"0.0.0.0/0"` | Control Plane CIDR, defaults to 0.0.0.0/0, use `kubectl get endpoints -n default kubernetes` to get the CIDR range needed for your cluster Must be an IP CIDR range (x.x.x.x/x - ideally with /32 for the specific IP of a single endpoint, broader range for multiple masters/endpoints) Used by package NetworkPolicies to allow Kube API access |
-| networkPolicies.vpcCidr | string | `"0.0.0.0/0"` |  |
-| networkPolicies.additionalPolicies | list | `[]` |  |
-| networkPolicies.egress | object | `{}` | NetworkPolicy selectors and ports for egress to downstream telemetry ingestion services. These should be uncommented and overridden if any of these values deviate from the Big Bang defaults. |
-| networkPolicies.ingressLabels.app | string | `"istio-ingressgateway"` |  |
-| networkPolicies.ingressLabels.istio | string | `"ingressgateway"` |  |
-| istio | object | `{"backstage":{"gateways":["istio-system/public"],"hosts":["backstage.{{ .Values.domain }}"]},"enabled":false,"hardened":{"customAuthorizationPolicies":[],"customServiceEntries":[],"enabled":false,"outboundTrafficPolicyMode":"REGISTRY_ONLY"},"mtls":{"mode":"STRICT"},"namespace":"istio-system"}` | Istio configuration |
+| networkPolicies.enabled | bool | `true` | Toggle networkPolicies |
+| networkPolicies.egress | object | `{"defaults":{"enabled":true},"from":{"backstage":{"to":{"definition":{"kubeAPI":true},"k8s":{"keycloak/keycloak:8443":true,"logging/loki:3100":true,"monitoring/grafana:3000":true,"monitoring/prometheus:9090":true,"tempo/tempo:4317":true}}}}}` | Egress policies |
+| networkPolicies.egress.defaults | object | `{"enabled":true}` | Default egress policies (deny-all, in-namespace, dns, istiod) |
+| networkPolicies.egress.from | object | `{"backstage":{"to":{"definition":{"kubeAPI":true},"k8s":{"keycloak/keycloak:8443":true,"logging/loki:3100":true,"monitoring/grafana:3000":true,"monitoring/prometheus:9090":true,"tempo/tempo:4317":true}}}}` | Egress rules from backstage pods |
+| networkPolicies.ingress | object | `{"defaults":{"enabled":true},"to":{"backstage:7007":{"from":{"definition":{"gateway":true}}}}}` | Ingress policies |
+| networkPolicies.ingress.defaults | object | `{"enabled":true}` | Default ingress policies (deny-all, in-namespace, prometheus sidecar) |
+| networkPolicies.ingress.to | object | `{"backstage:7007":{"from":{"definition":{"gateway":true}}}}` | Ingress rules to backstage pods |
+| networkPolicies.additionalPolicies | list | `[]` | Additional raw NetworkPolicy resources |
+| routes | object | `{"inbound":{"backstage":{"enabled":true,"gateways":["istio-gateway/public-ingressgateway"],"hosts":["backstage.{{ .Values.domain }}"],"port":7007,"service":"{{ include \"common.names.fullname\" . }}"}}}` | Routes configuration (VirtualService via bb-common) |
+| istio | object | `{"authorizationPolicies":{"custom":[],"enabled":false},"enabled":false,"mtls":{"mode":"STRICT"},"serviceEntries":{"custom":[]},"sidecar":{"enabled":false,"outboundTrafficPolicyMode":"REGISTRY_ONLY"}}` | Istio configuration |
+| istio.mtls | object | `{"mode":"STRICT"}` | mTLS PeerAuthentication mode |
+| istio.sidecar | object | `{"enabled":false,"outboundTrafficPolicyMode":"REGISTRY_ONLY"}` | Sidecar configuration for hardened mode |
+| istio.serviceEntries | object | `{"custom":[]}` | Custom ServiceEntry resources |
+| istio.authorizationPolicies | object | `{"custom":[],"enabled":false}` | AuthorizationPolicy configuration |
 | bbtests.enabled | bool | `false` |  |
 | bbtests.cypress.artifacts | bool | `true` |  |
 | bbtests.cypress.envs.cypress_url | string | `"http://backstage:7007"` |  |

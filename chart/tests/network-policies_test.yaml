@@ -1,0 +1,21 @@
+suite: network policies
+templates:
+  - templates/bigbang/network-policies.yaml
+tests:
+  - it: should create NetworkPolicy when enabled
+    set:
+      networkPolicies:
+        enabled: true
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: NetworkPolicy
+
+  - it: should not create NetworkPolicy when disabled
+    set:
+      networkPolicies:
+        enabled: false
+    asserts:
+      - hasDocuments:
+          count: 0
