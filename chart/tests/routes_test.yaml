@@ -1,0 +1,68 @@
+suite: routes
+templates:
+  - templates/bigbang/routes.yaml
+tests:
+  - it: should create VirtualService when istio and route are enabled
+    capabilities:
+      apiVersions:
+        - networking.istio.io/v1
+    set:
+      istio:
+        enabled: true
+      networkPolicies:
+        enabled: false
+      routes:
+        inbound:
+          backstage:
+            enabled: true
+            gateways:
+              - istio-gateway/public-ingressgateway
+            hosts:
+              - backstage.bigbang.mil
+            service: backstage
+            port: 7007
+    asserts:
+      - isKind:
+          of: VirtualService
+        documentSelector:
+          path: kind
+          value: VirtualService
+
+  - it: should not create VirtualService when istio API is unavailable
+    set:
+      routes:
+        inbound:
+          backstage:
+            enabled: true
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should not create VirtualService when route is disabled
+    capabilities:
+      apiVersions:
+        - networking.istio.io/v1
+    set:
+      istio:
+        enabled: true
+      routes:
+        inbound:
+          backstage:
+            enabled: false
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should create ingress netpol allowing traffic from istio gateway when route is enabled
+    capabilities:
+      apiVersions:
+        - networking.istio.io/v1
+    set:
+      networkPolicies:
+        enabled: true
+    asserts:
+      - isKind:
+          of: NetworkPolicy
+        documentSelector:
+          path: kind
+          value: NetworkPolicy
